@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">¡Presente!</string>
+    <string name="logout">Cerrar Sesión</string>
+    <string name="myProfile">Mi Perfil</string>
+    <string name="mail">Correo</string>
+    <string name="password">Contraseña</string>
+    <string name="registerMsg">No tienes una cuenta? Registrate ahora</string>
+    <string name="login">Log in</string>
+    <string name="name">Nombre</string>
+    <string name="password2">Confirmar Contraseña</string>
+    <string name="registerMsg2">Registrarse</string>
+    <string name="Principal">Menu Principal</string>
+    <string name="MainActivity">Menú Principal</string>
+    <string name="RegisterActivity">Registrarse</string>
+    <string name="ProfileActivity">Mi Perfil</string>
+    <string name="informacion1">Navega sobre tus multiples cursos</string>
+    <string name="informacion2">Ten un control efectivo sobre la asistencia de tus alumnos</string>
+    <string name="informacion3">Carga las notas de tus estudiantes de una manera simple.</string>
+
+</resources>
