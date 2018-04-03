@@ -32,10 +32,6 @@ public class MainActivity extends AppCompatActivity {
             sPassword = "";
         }
 
-        Log.d("Name",sName);
-        Log.d("Email",sEmail);
-        Log.d("Password",sPassword);
-
         tSaludo.setText("Bienvenido Profesor " + sName);
 
     }

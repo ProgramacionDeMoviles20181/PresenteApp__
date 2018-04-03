@@ -7,7 +7,6 @@ import android.content.pm.Signature;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -62,7 +61,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         setContentView(R.layout.activity_login);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
+
+
 
         eMail     = findViewById(R.id.eMail);
         ePassword = findViewById(R.id.ePassword);
@@ -79,8 +79,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             sEmail    = "";
             sPassword = "";
         }
-
         inicializeFirebaseLogin();
+        callbackManager = CallbackManager.Factory.create();
 
         btnSignInFacebook.setReadPermissions("email","public_profile");
 
@@ -94,7 +94,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onCancel() {
                 Log.d("Login con Facebook", "Login Cancelado");
-
             }
 
             @Override
@@ -104,7 +103,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-        /*
         //Facebook-- Add code to print out the key hash
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
@@ -119,8 +117,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         } catch (NoSuchAlgorithmException e) {
 
-        }
-        */
+    }
     }
 
     private void signInFacebook(AccessToken accessToken){
@@ -236,7 +233,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         if(task.isSuccessful()){
                             goMainActivity();
                         }else{
-                            Toast.makeText(LoginActivity.this,"error en inicio de sesión" , Toast.LENGTH_LONG).show();
+                           Log.d("Error!!!!!!!!!!!!!!!",task.toString());
+                           Toast.makeText(LoginActivity.this,"error en inicio de sesión" , Toast.LENGTH_LONG).show();
                         }
                     }
                 });
