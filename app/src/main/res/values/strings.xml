@@ -17,4 +17,8 @@
     <string name="informacion2">Ten un control efectivo sobre la asistencia de tus alumnos</string>
     <string name="informacion3">Carga las notas de tus estudiantes de una manera simple.</string>
 
+    <string name="facebook_app_id">570093966710666</string>
+    <string name="fb_login_protocol_scheme">fb570093966710666</string>
+
+
 </resources>

@@ -1,15 +1,27 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telecom.Call;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -20,9 +32,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
@@ -37,13 +53,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient googleApiClient;
     private SignInButton bGoogleSignIn;
 
+    private CallbackManager callbackManager;
+    private LoginButton btnSignInFacebook;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+
         eMail     = findViewById(R.id.eMail);
         ePassword = findViewById(R.id.ePassword);
         bGoogleSignIn = findViewById(R.id.bGoogleLogin);
+        btnSignInFacebook = findViewById(R.id.btnSignInFacebook);
 
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
@@ -57,6 +81,61 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
         inicializeFirebaseLogin();
+
+        btnSignInFacebook.setReadPermissions("email","public_profile");
+
+        btnSignInFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d("Login con Facebook", "Login Exitoso");
+                signInFacebook(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d("Login con Facebook", "Login Cancelado");
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d("Login con Facebook", "Login Error");
+                error.printStackTrace();
+            }
+        });
+
+        /*
+        //Facebook-- Add code to print out the key hash
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.programacionmoviles.juanpabloarangoa.presenteapp",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }
+        */
+    }
+
+    private void signInFacebook(AccessToken accessToken){
+        AuthCredential authCredential = FacebookAuthProvider.getCredential(accessToken.getToken());
+
+        firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    goMainActivity();
+                }else{
+                    Toast.makeText(LoginActivity.this, "Autenticacion con Facebook no exitosa", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void inicializeFirebaseLogin() {
@@ -109,6 +188,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }else if(requestCode == google_login_request){
             GoogleSignInResult googleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             signInWithGoogle(googleSignInResult);
+        }else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
