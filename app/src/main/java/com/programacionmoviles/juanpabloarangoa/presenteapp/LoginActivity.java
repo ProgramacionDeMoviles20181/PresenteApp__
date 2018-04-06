@@ -62,8 +62,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         FacebookSdk.sdkInitialize(getApplicationContext());
 
-
-
         eMail     = findViewById(R.id.eMail);
         ePassword = findViewById(R.id.ePassword);
         bGoogleSignIn = findViewById(R.id.bGoogleLogin);
