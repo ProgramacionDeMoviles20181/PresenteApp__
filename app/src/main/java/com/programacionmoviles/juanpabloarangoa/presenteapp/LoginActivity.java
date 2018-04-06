@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private int registerRequest = 002, google_login_request = 001;
     private EditText eMail,ePassword;
-    private String sName,sEmail,sPassword;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -67,16 +66,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         bGoogleSignIn = findViewById(R.id.bGoogleLogin);
         btnSignInFacebook = findViewById(R.id.btnSignInFacebook);
 
-        Bundle extras = getIntent().getExtras();
-        if(extras != null) {
-            sName     = extras.getString("name");
-            sEmail    = extras.getString("email");
-            sPassword = extras.getString("password");
-        }else{
-            sName     = "";
-            sEmail    = "";
-            sPassword = "";
-        }
         inicializeFirebaseLogin();
         callbackManager = CallbackManager.Factory.create();
 
