@@ -21,8 +21,10 @@
     <string name="fb_login_protocol_scheme">fb570093966710666</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_cursos">Cursos</string>
+    <string name="title_clase1">Asistir</string>
+    <string name="title_clase2">Iniciar</string>
+    <string name="title_profile">Mi perfil</string>
 
 
 </resources>

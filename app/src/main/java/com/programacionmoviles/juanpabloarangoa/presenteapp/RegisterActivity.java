@@ -50,12 +50,22 @@ public class RegisterActivity extends AppCompatActivity {
         pass1 = ePassword.getText().toString();
         pass2 = eRepPassword.getText().toString();
 
-        if(pass1.equals(pass2)) {
-            createAccount(eMail.getText().toString(),pass1);
-            setResult(RESULT_OK, intent);
-            finish();
-        }else{
-            Toast.makeText(RegisterActivity.this,"Contraseñas diferente" , Toast.LENGTH_LONG).show();
+        String sMail   = eMail.getText().toString().trim();
+        String ePattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
+        if (sMail.matches(ePattern))
+        {
+            if(pass1.equals(pass2)) {
+                createAccount(sMail,pass1);
+                setResult(RESULT_OK, intent);
+                finish();
+            }else{
+                Toast.makeText(RegisterActivity.this,"Contraseñas diferentes" , Toast.LENGTH_LONG).show();
+            }
+        }
+        else
+        {
+            Toast.makeText(RegisterActivity.this,"Email inválido", Toast.LENGTH_SHORT).show();
         }
     }
 
