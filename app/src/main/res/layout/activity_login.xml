@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
-            android:background="">
+            android:background="@color/skyblue">
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/bGoogleLogin"
                 android:layout_width="match_parent"
