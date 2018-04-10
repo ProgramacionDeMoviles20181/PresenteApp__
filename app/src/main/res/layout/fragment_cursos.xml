@@ -5,9 +5,10 @@
     tools:context="com.programacionmoviles.juanpabloarangoa.presenteapp.CoursesFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvCursos"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="cursos" />
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
