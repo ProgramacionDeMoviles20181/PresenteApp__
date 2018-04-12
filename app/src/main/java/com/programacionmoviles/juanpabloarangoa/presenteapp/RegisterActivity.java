@@ -1,6 +1,5 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,7 +13,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -22,18 +20,18 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText eName,eMail,ePassword,eRepPassword;
 
     private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
         eName     = findViewById(R.id.eNameR);
         eMail     = findViewById(R.id.eMailR);
         ePassword = findViewById(R.id.ePasswordR);
         eRepPassword = findViewById(R.id.eRepPasswordR);
 
-        firebaseAuth      = FirebaseAuth.getInstance();
     }
 
     public void onBackPressed() {
@@ -70,17 +68,20 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void createAccount(String mail, String passw) {
-        firebaseAuth.createUserWithEmailAndPassword(mail,passw)
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.createUserWithEmailAndPassword(mail, passw)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(RegisterActivity.this,"Cuenta creada" , Toast.LENGTH_LONG).show();
-                        }else{
-                            Toast.makeText(RegisterActivity.this,"Error al crear la cuenta" , Toast.LENGTH_LONG).show();
+                        Log.d("Firebase Message", task.getResult().toString());
+                        if (task.isSuccessful()) {
+                            Toast.makeText(RegisterActivity.this, "Cuenta creada", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "Error al crear la cuenta", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
 
     }
+
 }

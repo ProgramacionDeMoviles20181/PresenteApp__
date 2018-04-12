@@ -113,6 +113,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                Log.d("Firebase Message",task.getResult().toString());
                 if(task.isSuccessful()){
                     goMainActivity();
                 }else{
@@ -133,7 +134,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     Log.d("Firebase user","usuario logueado: "+firebaseUser.getEmail() );
                 }else{
                     Log.d("Firebase user","el usuario ha cerrado sesión");
-
                 }
             }
         };
