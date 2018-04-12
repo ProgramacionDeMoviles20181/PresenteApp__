@@ -35,6 +35,12 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -196,9 +202,43 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goMainActivity() {
+        createCuenta();
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void createCuenta() {
+        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+        FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("users").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Log.d("CreateCuenta():", "usuario creado");
+                }else{
+                    Log.d("CreateCuenta():", "usuario no creado");
+                    Estudiantes est = new Estudiantes(firebaseUser.getUid(),
+                            firebaseUser.getDisplayName(),
+                            firebaseUser.getPhoneNumber(),
+                            0,
+                            "https://firebasestorage.googleapis.com/v0/b/presenteapp2.appspot.com/o/estudiantesFotos%2Fsuperman.jpg?alt=media&token=383eff2d-9500-4c6f-9227-2d8728f0fb50");
+
+
+                    databaseReference.child("users").child(firebaseUser.getUid()).setValue(est);
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void onButtonClick(View view) {

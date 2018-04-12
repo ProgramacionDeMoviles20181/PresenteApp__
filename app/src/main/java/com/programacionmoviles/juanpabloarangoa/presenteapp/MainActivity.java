@@ -24,8 +24,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_logout;
 
-public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener{
+public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout {
 
     FragmentManager fm;
     FragmentTransaction ft;
@@ -63,14 +64,6 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
             return false;
         }
     };
-
-    private View.OnClickListener mButtonListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            Toast.makeText(MainActivity.this,"Log out",Toast.LENGTH_SHORT).show();
-            bLogoutOnClick();
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,9 +80,6 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
         HomeFragment fHome = new HomeFragment();
         ft.add(R.id.frame, fHome).commit();
-
-        bLogout = findViewById(R.id.bLogout);
-        bLogout.setOnClickListener(mButtonListener);
     }
 
     private void inicializeFirebaseLogin() {
@@ -166,21 +156,24 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
     private void bLogoutOnClick() {
 
-        firebaseAuth.signOut();
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
-             @Override
-             public void onResult(@NonNull Status status) {
-                 if(status.isSuccess()){
-                     goLoginActivity();
-                 }else{
-                     Toast.makeText(MainActivity.this,"Error cerrando sesión con google",Toast.LENGTH_SHORT).show();
-                 }
-             }
-         }
-        );
+
     }
 
 
+    @Override
+    public void envioDatosLogOut(int viewId) {
+        firebaseAuth.signOut();
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(@NonNull Status status) {
+                if(status.isSuccess()){
+                    goLoginActivity();
+                }else{
+                    Toast.makeText(MainActivity.this,"Error cerrando sesión con google",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }
 
 
