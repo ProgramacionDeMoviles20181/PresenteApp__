@@ -53,12 +53,21 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (sMail.matches(ePattern))
         {
-            if(pass1.equals(pass2)) {
-                createAccount(sMail,pass1);
-                setResult(RESULT_OK, intent);
-                finish();
+            if(!sMail.contains(" ")){
+                if(pass1.equals(pass2)) {
+                    if (pass1.contains(" ")){
+                        Toast.makeText(RegisterActivity.this,"Contraseña con espacios no recomendable" , Toast.LENGTH_LONG).show();
+                    }else{
+                        createAccount(sMail,pass1);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+
+                }else{
+                    Toast.makeText(RegisterActivity.this,"Contraseñas diferentes" , Toast.LENGTH_LONG).show();
+                }
             }else{
-                Toast.makeText(RegisterActivity.this,"Contraseñas diferentes" , Toast.LENGTH_LONG).show();
+                Toast.makeText(RegisterActivity.this,"Error, correo con espacios" , Toast.LENGTH_LONG).show();
             }
         }
         else

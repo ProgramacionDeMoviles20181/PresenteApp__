@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -20,8 +19,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_logout;
@@ -34,8 +31,6 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private GoogleApiClient mGoogleApiClient;
-
-
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -64,6 +59,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
             return false;
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +89,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
                     Log.d("Firebase user","usuario logueado: "+firebaseUser.getEmail() );
                 }else{
                     Log.d("Firebase user","el usuario ha cerrado sesión");
+                    goLoginActivity();
                 }
             }
         };
@@ -113,6 +110,25 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
         Intent intent = new Intent(MainActivity.this,LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void envioDatosLogOut(int viewId) {
+        firebaseAuth.signOut();
+        if(Auth.GoogleSignInApi != null){
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(@NonNull Status status) {
+                    if(status.isSuccess()){
+                        goLoginActivity();
+                    }else{
+                        Toast.makeText(MainActivity.this,"Error cerrando sesión con google",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }if(LoginManager.getInstance() != null){
+            LoginManager.getInstance().logOut();
+        }
     }
 
     @Override
@@ -154,26 +170,6 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
     }
 
-    private void bLogoutOnClick() {
-
-
-    }
-
-
-    @Override
-    public void envioDatosLogOut(int viewId) {
-        firebaseAuth.signOut();
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                if(status.isSuccess()){
-                    goLoginActivity();
-                }else{
-                    Toast.makeText(MainActivity.this,"Error cerrando sesión con google",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 }
 
 
