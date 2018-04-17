@@ -22,7 +22,6 @@ public class CoursesFragment extends Fragment {
 
     //private ArrayList<Curso> cursos;
     private RecyclerView rvCursos;
-    private Button bLogoutFragment;
 
     public CoursesFragment() {
         // Required empty public constructor
@@ -36,7 +35,6 @@ public class CoursesFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_cursos, container, false);
 
         rvCursos = (RecyclerView) v.findViewById(R.id.rvCursos);
-        bLogoutFragment = v.findViewById(R.id.bLogout);
 
 
         // use this setting to improve performance if you know that changes

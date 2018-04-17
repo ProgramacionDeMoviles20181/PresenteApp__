@@ -202,13 +202,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goMainActivity() {
-        createCuenta();
+        //createCuenta();
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
         finish();
     }
 
-    private void createCuenta() {
+   /* private void createCuenta() {
         final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
@@ -224,8 +224,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     Estudiantes est = new Estudiantes(firebaseUser.getUid(),
                             firebaseUser.getDisplayName(),
                             firebaseUser.getPhoneNumber(),
-                            0,
-                            "https://firebasestorage.googleapis.com/v0/b/presenteapp2.appspot.com/o/estudiantesFotos%2Fsuperman.jpg?alt=media&token=383eff2d-9500-4c6f-9227-2d8728f0fb50");
+                            "",
+                            "");
 
 
                     databaseReference.child("users").child(firebaseUser.getUid()).setValue(est);
@@ -240,6 +240,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
+
+    */
 
     public void onButtonClick(View view) {
         String mail,passw;
