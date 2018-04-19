@@ -202,13 +202,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goMainActivity() {
-        //createCuenta();
+        createCuenta();
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
         finish();
     }
 
-   /* private void createCuenta() {
+    private void createCuenta() {
         final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
@@ -241,7 +241,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
-    */
+
 
     public void onButtonClick(View view) {
         String mail,passw;

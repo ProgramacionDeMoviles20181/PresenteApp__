@@ -30,6 +30,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private String sUniversity, sCarnet, sMobile, sName;
 
+    String pass1,pass2;
+
+    String sMail;
+
     boolean bProfile;
 
     private FirebaseAuth firebaseAuth;
@@ -61,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void onButtonClick(View view) {
         Intent intent = new Intent();
 
-        String pass1,pass2;
+
 
         sUniversity = eUniversity.getText().toString();
         sCarnet = eCarnet.getText().toString();
@@ -69,10 +73,11 @@ public class RegisterActivity extends AppCompatActivity {
         sName = eName.getText().toString();
 
 
+
         pass1 = ePassword.getText().toString();
         pass2 = eRepPassword.getText().toString();
 
-        String sMail   = eMail.getText().toString().trim();
+        sMail   = eMail.getText().toString().trim();
         String ePattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
         if (sMail.matches(ePattern))
@@ -105,8 +110,6 @@ public class RegisterActivity extends AppCompatActivity {
         final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
-        Log.d("firebaseuid",firebaseUser.getUid());
-
         FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -124,7 +127,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d("CreateCuenta():", "usuario no creado");
                         Profesores profesor = new Profesores(firebaseUser.getUid(),sName,sMobile,sUniversity,sCarnet);
 
-                        databaseReference.child("users").child(firebaseUser.getUid()).setValue(profesor);
+                        databaseReference.child("estudiantes").child(firebaseUser.getUid()).setValue(profesor);
 
 
                     }
@@ -150,7 +153,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d("CreateCuenta():", "usuario no creado");
                         Estudiantes estudiante = new Estudiantes(firebaseUser.getUid(),sName,sMobile,sUniversity,sCarnet);
 
-                        databaseReference.child("users").child(firebaseUser.getUid()).setValue(estudiante);
+                        databaseReference.child("estudiantes").child(firebaseUser.getUid()).setValue(estudiante);
 
 
                     }
