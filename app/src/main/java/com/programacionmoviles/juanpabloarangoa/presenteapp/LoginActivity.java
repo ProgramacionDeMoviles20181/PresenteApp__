@@ -214,7 +214,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("users").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Estudiantes").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
@@ -225,7 +225,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             firebaseUser.getDisplayName(),
                             firebaseUser.getPhoneNumber(),
                             0,
-                            "https://firebasestorage.googleapis.com/v0/b/presenteapp2.appspot.com/o/estudiantesFotos%2Fsuperman.jpg?alt=media&token=383eff2d-9500-4c6f-9227-2d8728f0fb50");
+                            "gs://presenteapp2.appspot.com/Cursos/calculo_1.png");
 
 
                     databaseReference.child("users").child(firebaseUser.getUid()).setValue(est);
