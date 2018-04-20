@@ -221,14 +221,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     Log.d("CreateCuenta():", "usuario creado");
                 }else{
                     Log.d("CreateCuenta():", "usuario no creado");
-                    Estudiantes est = new Estudiantes(firebaseUser.getUid(),
+                    Estudiantes est = new Estudiantes(
+                            firebaseUser.getUid(),
                             firebaseUser.getDisplayName(),
                             firebaseUser.getPhoneNumber(),
                             0,
-                            "gs://presenteapp2.appspot.com/Cursos/calculo_1.png");
+                            "gs://presenteapp2.appspot.com/Cursos/calculo_1.png",
+                            "1036656352",
+                            "UdeA"
+                            );
 
 
-                    databaseReference.child("users").child(firebaseUser.getUid()).setValue(est);
+                    databaseReference.child("Estudiantes").child(firebaseUser.getUid()).setValue(est);
 
 
                 }

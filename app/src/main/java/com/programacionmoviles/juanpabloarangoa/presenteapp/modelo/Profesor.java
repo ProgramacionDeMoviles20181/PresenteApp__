@@ -1,28 +1,28 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp.modelo;
 
-public class Estudiantes {
+public class Profesor {
     private String id;
     private String nombre;
     private String telefono;
-    private int edad;
-    private String fotoLink;
+    private int    edad;
+    private String foto;
     private String cedula;
     private String institucion;
 
-    public Estudiantes() {
-    }
+    public Profesor() { }
 
-    public Estudiantes(String id, String nombre, String telefono, int edad, String fotoLink, String cedula, String institucion) {
+    public Profesor(String id, String nombre, String telefono, int edad, String foto, String cedula, String institucion) {
         this.id = id;
         this.nombre = nombre;
         this.telefono = telefono;
         this.edad = edad;
-        this.fotoLink = fotoLink;
+        this.foto = foto;
         this.cedula = cedula;
         this.institucion = institucion;
     }
 
     public String getId() {
+
         return id;
     }
 
@@ -54,12 +54,12 @@ public class Estudiantes {
         this.edad = edad;
     }
 
-    public String getFotoLink() {
-        return fotoLink;
+    public String getFoto() {
+        return foto;
     }
 
-    public void setFotoLink(String fotoLink) {
-        this.fotoLink = fotoLink;
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public String getCedula() {

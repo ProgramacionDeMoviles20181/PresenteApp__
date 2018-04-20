@@ -2,6 +2,7 @@ package com.programacionmoviles.juanpabloarangoa.presenteapp.Adapters;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,9 +73,8 @@ public class AdapterCourses extends RecyclerView.Adapter<AdapterCourses.CoursesV
 
         public void bindCourses(Cursos curso,Activity activity){
             tNameCourse.setText(curso.getNombre());
-            tTeacherCourse.setText(curso.getProfesor());
+            tTeacherCourse.setText(curso.getDocente());
             tDateCourse.setText(curso.getHorario());
-            Picasso.get().load(curso.getFoto()).into(iFoto);
         }
     }
 }

@@ -6,10 +6,10 @@
     android:orientation="vertical"
     tools:context="com.programacionmoviles.juanpabloarangoa.presenteapp.RegisterActivity">
 
-<LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7">
+        android:layout_weight="3">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -26,16 +26,63 @@
         <EditText
             android:id="@+id/eNameR"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="23dp"
             android:hint="@string/name"
             />
+
+        <EditText
+            android:id="@+id/eCarnet"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:inputType="number"
+            android:hint="@string/carnet"
+            />
+
+        <EditText
+            android:id="@+id/eAge"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:inputType="numberDecimal"
+            android:hint="@string/edad"
+            />
+
+        <EditText
+            android:id="@+id/eInstitucion"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:inputType="text"
+            android:hint="@string/institucion"
+            />
+
+        <EditText
+            android:id="@+id/eCelular"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:inputType="number"
+            android:hint="@string/celular"
+            />
+
         <EditText
             android:id="@+id/eMailR"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:inputType="textEmailAddress"
@@ -44,7 +91,8 @@
         <EditText
             android:id="@+id/ePasswordR"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:inputType="textPassword"
@@ -53,17 +101,41 @@
         <EditText
             android:id="@+id/eRepPasswordR"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:inputType="textPassword"
             android:hint="@string/password2"
             />
 
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/rProfe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profesor"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="left"
+                android:checked="true"
+                android:onClick="onRadioButtonClicked"/>
+            <RadioButton android:id="@+id/rEstudiante"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/estudiante"
+                android:layout_gravity="right"
+                android:layout_marginLeft="120dp"
+                android:onClick="onRadioButtonClicked"/>
+        </RadioGroup>
+
         <Button
             android:id="@+id/bRegister"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"
             android:textAllCaps="false"
