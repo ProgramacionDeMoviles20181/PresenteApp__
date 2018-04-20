@@ -38,6 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authStateListener;
 
     private FirebaseUser user;
+    private String sUid;
 
 
     @Override
@@ -102,6 +103,16 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this,"Contraseña con espacios no recomendable" , Toast.LENGTH_LONG).show();
                     }else{
                         createAccount(sMail,pass1);
+                        intent.putExtra("email"   , sMail);
+                        intent.putExtra("password", pass1);
+                        intent.putExtra("nombre"  , sName);
+                        intent.putExtra("telefono", sMobile);
+                        intent.putExtra("edad", edad);
+                        intent.putExtra("fotoLink", "gs://presenteapp2.appspot.com/improfile.png");
+                        intent.putExtra("cedula",sCarnet);
+                        intent.putExtra("universidad",sUniversity);
+                        intent.putExtra("bProfile",bProfile);
+                        intent.putExtra("uid",sUid);
                         setResult(RESULT_OK, intent);
                         finish();
                     }
@@ -129,36 +140,12 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d("Firebase Message", task.getResult().toString());
                         if (task.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, "Cuenta creada", Toast.LENGTH_LONG).show();
-                            user = task.getResult().getUser();
-                            Log.d("ID_USER_CREATION: ", "user_id = "+user.getUid());
-                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                            if(bProfile){
-                                Profesor profe = new Profesor(
-                                        user.getUid(),
-                                        sName,
-                                        sMobile,
-                                        edad,
-                                        "gs://presenteapp2.appspot.com/improfile.png",
-                                        sCarnet,
-                                        sUniversity
-                                );
-                                databaseReference.child("Profesores").child(user.getUid()).setValue(profe);
-                            }else{
-                                Estudiantes est = new Estudiantes(
-                                        user.getUid(),
-                                        sName,
-                                        sMobile,
-                                        edad,
-                                        "gs://presenteapp2.appspot.com/improfile.png",
-                                        sCarnet,
-                                        sUniversity
-                                );
-                                databaseReference.child("Estudiantes").child(user.getUid()).setValue(est);
-                            }
+
 
                         } else {
                             Toast.makeText(RegisterActivity.this, "Error al crear la cuenta", Toast.LENGTH_LONG).show();
                         }
+                        sUid = task.getResult().getUser().getUid();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

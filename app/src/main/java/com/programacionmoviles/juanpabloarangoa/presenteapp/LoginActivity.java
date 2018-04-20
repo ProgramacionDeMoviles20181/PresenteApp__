@@ -41,6 +41,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Profesor;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -51,6 +52,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private int registerRequest = 002, google_login_request = 001;
     private EditText eMail,ePassword;
 
+    private String[] sProfileType = {"Estudiantes","Profesores"};
+    private String sProfile;
+
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
 
@@ -59,6 +63,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private CallbackManager callbackManager;
     private LoginButton btnSignInFacebook;
+
+    private String sEmail      ="";
+    private String sPass       ="";
+    private String sName       ="";
+    private String sMobile     ="";
+    private int edad           =0;
+    private String sFoto       ="";
+    private String sCarnet     ="";
+    private String sUniversity ="";
+    private boolean bProfile   = true;
+    private String Uid = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +188,24 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == registerRequest && resultCode == RESULT_OK){
             Toast.makeText(this,"Registro Completado", Toast.LENGTH_LONG).show();
+            Bundle extras       = data.getExtras();
+            sEmail       = extras.getString("email");
+            sPass        = extras.getString("password");
+            sName        = extras.getString("nombre");
+            sMobile      = extras.getString("telefono");
+            edad            = extras.getInt("edad");
+            sFoto        = extras.getString("fotoLink");
+            sCarnet      = extras.getString("cedula");
+            sUniversity  = extras.getString("universidad");
+            bProfile     = extras.getBoolean("bProfile");
+            Uid          = extras.getString("uid");
+
+            createCuenta();
+
+            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+            startActivity(intent);
+            finish();
+
         }else if(requestCode == registerRequest && resultCode == RESULT_CANCELED){
             Toast.makeText(this,"Registro Cancelado" , Toast.LENGTH_LONG).show();
         }else if(requestCode == google_login_request){
@@ -202,7 +235,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goMainActivity() {
-        createCuenta();
+        createCuenta("Estudiantes");
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
         finish();
@@ -210,29 +243,46 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void createCuenta() {
         final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        firebaseAuth.signInWithEmailAndPassword(sEmail,sPass);
 
         FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("Estudiantes").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+        if (bProfile) {
+            sProfile = sProfileType[1];
+        } else {
+            sProfile = sProfileType[0];
+        }
+        String a = firebaseAuth.getCurrentUser().getUid();
+        databaseReference.child(sProfile).child(a).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     Log.d("CreateCuenta():", "usuario creado");
-                }else{
+                } else {
                     Log.d("CreateCuenta():", "usuario no creado");
-                    Estudiantes est = new Estudiantes(
-                            firebaseUser.getUid(),
-                            firebaseUser.getDisplayName(),
-                            firebaseUser.getPhoneNumber(),
-                            0,
-                            "gs://presenteapp2.appspot.com/Cursos/calculo_1.png",
-                            "1036656352",
-                            "UdeA"
-                            );
-
-
-                    databaseReference.child("Estudiantes").child(firebaseUser.getUid()).setValue(est);
+                    if(bProfile){
+                        Profesor profe = new Profesor(
+                                Uid,
+                                sName,
+                                sMobile,
+                                edad,
+                                "gs://presenteapp2.appspot.com/improfile.png",
+                                sCarnet,
+                                sUniversity
+                        );
+                        databaseReference.child(sProfileType[1]).child(String.valueOf(Uid)).setValue(profe);
+                    }else{
+                        Estudiantes est = new Estudiantes(
+                                Uid,
+                                sName,
+                                sMobile,
+                                edad,
+                                "gs://presenteapp2.appspot.com/improfile.png",
+                                sCarnet,
+                                sUniversity
+                        );
+                        databaseReference.child(sProfileType[0]).child(String.valueOf(Uid)).setValue(est);
+                    }
 
 
                 }
@@ -243,6 +293,61 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             }
         });
+
+        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
+
+    private void createCuenta(String sProfile) {
+        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+        FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        bProfile = sProfile.equals(sProfileType[1]);
+        databaseReference.child(sProfile).child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Log.d("CreateCuenta():", "usuario creado");
+                } else {
+                    Log.d("CreateCuenta():", "usuario no creado");
+                    if(bProfile){
+                        Profesor profe = new Profesor(
+                                firebaseUser.getUid(),
+                                sName,
+                                sMobile,
+                                edad,
+                                "gs://presenteapp2.appspot.com/improfile.png",
+                                sCarnet,
+                                sUniversity
+                        );
+                        databaseReference.child(sProfileType[1]).child(firebaseUser.getUid()).setValue(profe);
+                    }else{
+                        Estudiantes est = new Estudiantes(
+                                firebaseUser.getUid(),
+                                sName,
+                                sMobile,
+                                edad,
+                                "gs://presenteapp2.appspot.com/improfile.png",
+                                sCarnet,
+                                sUniversity
+                        );
+                        databaseReference.child(sProfileType[0]).child(firebaseUser.getUid()).setValue(est);
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     public void onButtonClick(View view) {
@@ -262,6 +367,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+
                             goMainActivity();
                         }else{
                            Log.d("Error!!!!!!!!!!!!!!!",task.toString());
