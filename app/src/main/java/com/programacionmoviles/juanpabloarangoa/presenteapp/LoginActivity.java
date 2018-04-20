@@ -186,6 +186,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == registerRequest && resultCode == RESULT_OK){
             Toast.makeText(this,"Registro Completado", Toast.LENGTH_LONG).show();
             Bundle extras       = data.getExtras();
@@ -193,7 +194,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             sPass        = extras.getString("password");
             sName        = extras.getString("nombre");
             sMobile      = extras.getString("telefono");
-            edad            = extras.getInt("edad");
+            edad         = extras.getInt("edad");
             sFoto        = extras.getString("fotoLink");
             sCarnet      = extras.getString("cedula");
             sUniversity  = extras.getString("universidad");
@@ -214,8 +215,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void signInWithGoogle(GoogleSignInResult googleSignInResult) {
@@ -243,7 +242,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void createCuenta() {
         final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuth.signInWithEmailAndPassword(sEmail,sPass);
+        firebaseAuth.signInWithEmailAndPassword(sEmail,sPass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+            }
+        });
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -252,8 +256,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         } else {
             sProfile = sProfileType[0];
         }
-        String a = firebaseAuth.getCurrentUser().getUid();
-        databaseReference.child(sProfile).child(a).addValueEventListener(new ValueEventListener() {
+        databaseReference.child(sProfile).child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -270,7 +273,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 sCarnet,
                                 sUniversity
                         );
-                        databaseReference.child(sProfileType[1]).child(String.valueOf(Uid)).setValue(profe);
+                        databaseReference.child(sProfileType[1]).child(firebaseUser.getUid()).setValue(profe);
                     }else{
                         Estudiantes est = new Estudiantes(
                                 Uid,
@@ -281,7 +284,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 sCarnet,
                                 sUniversity
                         );
-                        databaseReference.child(sProfileType[0]).child(String.valueOf(Uid)).setValue(est);
+                        databaseReference.child(sProfileType[0]).child(firebaseUser.getUid()).setValue(est);
                     }
 
 
