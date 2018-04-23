@@ -15,13 +15,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
-import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Profesores;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -37,6 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
     boolean bProfile;
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
 
     private FirebaseAuth.AuthStateListener authStateListener;
     
@@ -88,7 +82,6 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this,"Contraseña con espacios no recomendable" , Toast.LENGTH_LONG).show();
                     }else{
                         createAccount(sMail,pass1);
-                        registerDB();
                         setResult(RESULT_OK, intent);
                         finish();
                     }
@@ -106,77 +99,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private void registerDB(){
-        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-
-        FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-
-        if(bProfile){
-            //Es profe
-            //Profesores profesor = new Profesores(firebaseUser.getUid(),sName,sMobile,sUniversity,sCarnet);
-            //databaseReference.child("profesores").child(firebaseUser.getUid()).setValue(profesor);
-
-            databaseReference.child("profesores").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
-                        Log.d("CreateCuenta():", "usuario creado");
-                    }else{
-                        Log.d("CreateCuenta():", "usuario no creado");
-                        Profesores profesor = new Profesores(firebaseUser.getUid(),sName,sMobile,sUniversity,sCarnet);
-
-                        databaseReference.child("estudiantes").child(firebaseUser.getUid()).setValue(profesor);
-
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-        }else {
-            //Es estudiante
-            //Estudiantes estudiante = new Estudiantes(firebaseUser.getUid(),sName,sMobile,sUniversity,sCarnet);
-            //databaseReference.child("estudiantes").child(firebaseUser.getUid()).setValue(estudiante);
-
-            databaseReference.child("estudiantes").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
-                        Log.d("CreateCuenta():", "usuario creado");
-                    }else{
-                        Log.d("CreateCuenta():", "usuario no creado");
-                        Estudiantes estudiante = new Estudiantes(firebaseUser.getUid(),sName,sMobile,sUniversity,sCarnet);
-
-                        databaseReference.child("estudiantes").child(firebaseUser.getUid()).setValue(estudiante);
-
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-        }
-
-
-
-        //------
-
-
-        //-------
-
-
-    }
-
     private void createAccount(String mail, String passw) {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.createUserWithEmailAndPassword(mail, passw)
@@ -185,6 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d("Firebase Message", task.getResult().toString());
                         if (task.isSuccessful()) {
+                            firebaseUser = task.getResult().getUser();
                             Toast.makeText(RegisterActivity.this, "Cuenta creada", Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(RegisterActivity.this, "Error al crear la cuenta", Toast.LENGTH_LONG).show();

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +42,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Profesor;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -48,7 +50,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
 
-    private int registerRequest = 002, google_login_request = 001;
+    private int registerRequest = 002, google_login_request = 001, register2Request = 003;
     private EditText eMail,ePassword;
 
     private FirebaseAuth firebaseAuth;
@@ -59,6 +61,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private CallbackManager callbackManager;
     private LoginButton btnSignInFacebook;
+
+    private String sInstitucion, sCedula, sCelular;
+    int iEdad;
+    private boolean bProfe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,12 +127,40 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onComplete(@NonNull Task<AuthResult> task) {
                 Log.d("Firebase Message",task.getResult().toString());
                 if(task.isSuccessful()){
-                    goMainActivity();
+                    //codigo original aca abajo
+                    //goMainActivity();
+                    Register2_goMainActiviy();
                 }else{
                     Toast.makeText(LoginActivity.this, "Autenticacion con Facebook no exitosa", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private void Register2_goMainActiviy(){
+        //-------------------Create cuenta-----------------
+
+        //Debería checkear acá que el usuario ya exista para que no lo lleve a pedir datos otra vez
+
+        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+        //Tomar datos del usuario actual
+        String sMail = firebaseUser.getEmail();
+        String sName = firebaseUser.getDisplayName();
+        Uri linkPhoto = firebaseUser.getPhotoUrl();
+
+        //--------------------------------------------------
+
+        Intent intent = new Intent(LoginActivity.this,Register2Activity.class);
+
+        //Poner en el intent los datos que me jale del usuario e ir a register2
+        intent.putExtra("EXTRA_EMAIL", sMail);
+        intent.putExtra("EXTRA_NAME", sName);
+        startActivityForResult(intent,register2Request);
+
+        //Tal vez en el on activity result pueda poner que si es exitoso vaya al main
+        //goMainActivity();
     }
 
     private void inicializeFirebaseLogin() {
@@ -175,9 +209,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             Toast.makeText(this,"Registro Completado", Toast.LENGTH_LONG).show();
         }else if(requestCode == registerRequest && resultCode == RESULT_CANCELED){
             Toast.makeText(this,"Registro Cancelado" , Toast.LENGTH_LONG).show();
-        }else if(requestCode == google_login_request){
+        }else if(requestCode == google_login_request) {
             GoogleSignInResult googleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             signInWithGoogle(googleSignInResult);
+        }else if(requestCode == register2Request && resultCode == RESULT_OK){
+            Bundle extras = data.getExtras();
+            //Debo extraer estos datos y tal vez llamar a la funcion createCuenta e ir al main activity
+            iEdad = extras.getInt("EXTRA_EDAD");
+            sInstitucion = extras.getString("EXTRA_INSTITUCION");
+            sCedula = extras.getString("EXTRA_CEDULA");
+            sCelular = extras.getString("EXTRA_CELULAR");
+            bProfe = extras.getBoolean("EXTRA_PERFIL");
+            createCuenta();
+
         }else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
@@ -193,7 +237,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            goMainActivity();
+                            //goMainActivity();
+                            Register2_goMainActiviy();
                         }
                     });
         }else{
@@ -202,7 +247,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goMainActivity() {
-        createCuenta();
+        //createCuenta();
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
         finish();
@@ -214,31 +259,70 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("users").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    Log.d("CreateCuenta():", "usuario creado");
-                }else{
-                    Log.d("CreateCuenta():", "usuario no creado");
-                    Estudiantes est = new Estudiantes(firebaseUser.getUid(),
-                            firebaseUser.getDisplayName(),
-                            firebaseUser.getPhoneNumber(),
-                            "",
-                            "");
+
+        if(bProfe){
+            databaseReference.child("profesores").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        Log.d("CreateCuenta():", "usuario creado");
+                    }else{
+                        Log.d("CreateCuenta():", "usuario no creado");
+                        Profesor profe = new Profesor(firebaseUser.getUid(),
+                                firebaseUser.getDisplayName(),
+                                sCelular,
+                                iEdad,
+                                "",
+                                sCedula,
+                                sInstitucion);
 
 
-                    databaseReference.child("users").child(firebaseUser.getUid()).setValue(est);
+                        databaseReference.child("profesores").child(firebaseUser.getUid()).setValue(profe);
 
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
-            }
+            });
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+        }else{
+            //Es estudiante
 
-            }
-        });
+            databaseReference.child("estudiantes").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        Log.d("CreateCuenta():", "usuario creado");
+                    }else{
+                        Log.d("CreateCuenta():", "usuario no creado");
+                        Estudiantes est = new Estudiantes(firebaseUser.getUid(),
+                                firebaseUser.getDisplayName(),
+                                sCelular,
+                                iEdad,
+                                "",
+                                sCedula,
+                                sInstitucion);
+
+
+                        databaseReference.child("estudiantes").child(firebaseUser.getUid()).setValue(est);
+
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+        goMainActivity();
     }
 
 

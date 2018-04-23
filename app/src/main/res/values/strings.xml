@@ -35,6 +35,7 @@
     <string name="institucion">Institución</string>
     <string name="carnet">Carnet</string>
     <string name="celular">Celular</string>
+    <string name="edad2">Edad</string>
 
 
 </resources>

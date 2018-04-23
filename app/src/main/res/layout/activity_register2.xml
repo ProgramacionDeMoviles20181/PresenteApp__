@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context="com.programacionmoviles.juanpabloarangoa.presenteapp.RegisterActivity">
 
-<LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3">
@@ -24,7 +24,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/eNameR"
+            android:id="@+id/eName2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -35,7 +35,17 @@
             />
 
         <EditText
-            android:id="@+id/eCarnet"
+            android:id="@+id/eAge2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="@string/edad2"
+            />
+
+        <EditText
+            android:id="@+id/eCarnet2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -46,7 +56,7 @@
             />
 
         <EditText
-            android:id="@+id/eInstitucion"
+            android:id="@+id/eInstitucion2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -57,7 +67,7 @@
             />
 
         <EditText
-            android:id="@+id/eCelular"
+            android:id="@+id/eCelular2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -68,7 +78,7 @@
             />
 
         <EditText
-            android:id="@+id/eMailR"
+            android:id="@+id/eMail2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -78,40 +88,20 @@
             android:hint="@string/mail"
             />
 
-        <EditText
-            android:id="@+id/ePasswordR"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:inputType="textPassword"
-            android:hint="@string/password"
-            />
-        <EditText
-            android:id="@+id/eRepPasswordR"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:inputType="textPassword"
-            android:hint="@string/password2"
-            />
-
         <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
-            <RadioButton android:id="@+id/rProfe"
+            <RadioButton android:id="@+id/rProfe2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/profesor"
                 android:layout_marginLeft="20dp"
                 android:layout_gravity="left"
+                android:checked="true"
                 android:onClick="onRadioButtonClicked"/>
-            <RadioButton android:id="@+id/rEstudiante"
+            <RadioButton android:id="@+id/rEstudiante2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/estudiante"
@@ -121,7 +111,7 @@
         </RadioGroup>
 
         <Button
-            android:id="@+id/bRegister"
+            android:id="@+id/bRegister2"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -138,4 +128,3 @@
 
 
 </LinearLayout>
-

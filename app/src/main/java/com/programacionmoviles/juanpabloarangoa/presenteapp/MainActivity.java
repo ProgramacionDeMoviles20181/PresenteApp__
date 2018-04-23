@@ -21,6 +21,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_logout;
 
 public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout {
@@ -84,9 +85,16 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
                 if(firebaseUser != null){
                     Log.d("Firebase user","usuario logueado: "+firebaseUser.getDisplayName() );
                     Log.d("Firebase user","usuario logueado: "+firebaseUser.getEmail() );
+
+                    //----Daño agregado
+                    //String provider = firebaseUser.getProviders().get(0);
+                    //Log.d("Tipo de Logueo", provider );
+
+
                 }else{
                     Log.d("Firebase user","el usuario ha cerrado sesión");
                     goLoginActivity();
