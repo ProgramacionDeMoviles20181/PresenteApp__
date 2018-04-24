@@ -130,6 +130,35 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     //codigo original aca abajo
                     //goMainActivity();
                     String Uid_user = task.getResult().getUser().getUid();
+                    FirebaseDatabase.getInstance();
+                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                    databaseReference.child("estudiantes").child(Uid_user).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                goMainActivity();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    databaseReference.child("profesores").child(Uid_user).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                goMainActivity();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                     Register2_goMainActiviy();
                 }else{
                     Toast.makeText(LoginActivity.this, "Autenticacion con Facebook no exitosa", Toast.LENGTH_SHORT).show();
@@ -223,6 +252,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             bProfe = extras.getBoolean("EXTRA_PERFIL");
             createCuenta();
 
+        }else if(requestCode == register2Request && resultCode == RESULT_CANCELED){
+            //cerrar cesion
         }else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
@@ -239,6 +270,36 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             //goMainActivity();
+                            String Uid_user = task.getResult().getUser().getUid();
+                            FirebaseDatabase.getInstance();
+                            final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                            databaseReference.child("estudiantes").child(Uid_user).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.exists()){
+                                        goMainActivity();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                            databaseReference.child("profesores").child(Uid_user).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.exists()){
+                                        goMainActivity();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                             Register2_goMainActiviy();
                         }
                     });
@@ -248,7 +309,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void goMainActivity() {
-        //createCuenta();
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
         finish();
@@ -345,6 +405,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+                            Log.d()
                             goMainActivity();
                         }else{
                            Log.d("Error!!!!!!!!!!!!!!!",task.toString());

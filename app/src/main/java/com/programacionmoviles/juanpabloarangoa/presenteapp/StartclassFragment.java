@@ -72,7 +72,7 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
 
         LatLng udea = new LatLng(6.266953, -75.569111);
 
-        mMap.addMarker(new MarkerOptions().position(udea).title("Universida de Antioquia").snippet("Alma Mater").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+        mMap.addMarker(new MarkerOptions().position(udea).title("Universidad de Antioquia").snippet("Alma Mater").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(udea, 17));
 
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
