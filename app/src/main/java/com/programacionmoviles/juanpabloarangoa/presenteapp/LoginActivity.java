@@ -129,6 +129,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if(task.isSuccessful()){
                     //codigo original aca abajo
                     //goMainActivity();
+                    String Uid_user = task.getResult().getUser().getUid();
                     Register2_goMainActiviy();
                 }else{
                     Toast.makeText(LoginActivity.this, "Autenticacion con Facebook no exitosa", Toast.LENGTH_SHORT).show();

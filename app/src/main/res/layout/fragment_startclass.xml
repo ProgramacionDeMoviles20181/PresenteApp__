@@ -5,9 +5,16 @@
     tools:context="com.programacionmoviles.juanpabloarangoa.presenteapp.StartclassFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.gms.maps.MapView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="start class" />
+        android:layout_height="300dp"
+        android:name = "com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/map"
+        >
+
+    </com.google.android.gms.maps.MapView>
+
+
+
 
 </FrameLayout>
