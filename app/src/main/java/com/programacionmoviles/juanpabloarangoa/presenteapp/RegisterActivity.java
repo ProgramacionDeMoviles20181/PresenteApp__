@@ -27,7 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     String sMail;
 
-    boolean bProfile;
+    boolean bProfile = true;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
@@ -82,6 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this,"Contraseña con espacios no recomendable" , Toast.LENGTH_LONG).show();
                     }else{
                         createAccount(sMail,pass1);
+                        verifyFirebaseDataBase();
                         setResult(RESULT_OK, intent);
                         finish();
                     }
@@ -99,6 +100,21 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    private void verifyFirebaseDataBase() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.signInWithEmailAndPassword(sMail,pass1).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    String Uid_user = task.getResult().getUser().getUid();
+                    Log.d("Uid",Uid_user);
+                }
+            }
+        });
+
+        firebaseAuth.signOut();
+    }
+
     private void createAccount(String mail, String passw) {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.createUserWithEmailAndPassword(mail, passw)
@@ -107,7 +123,8 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d("Firebase Message", task.getResult().toString());
                         if (task.isSuccessful()) {
-                            firebaseUser = task.getResult().getUser();
+                            String Uid_user = task.getResult().getUser().getUid();
+                            Log.d("userID", Uid_user);
                             Toast.makeText(RegisterActivity.this, "Cuenta creada", Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(RegisterActivity.this, "Error al crear la cuenta", Toast.LENGTH_LONG).show();
@@ -118,19 +135,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.rProfe:
-                if (checked)
-                    bProfile = true;
-                    break;
+                bProfile = true;
+                break;
             case R.id.rEstudiante:
-                if (checked)
-                    bProfile = false;
-                    break;
+                bProfile = false;
+                break;
         }
     }
 }

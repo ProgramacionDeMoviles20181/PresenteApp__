@@ -16,7 +16,7 @@ public class Register2Activity extends AppCompatActivity {
 
     int iEdad2;
 
-    boolean bProfile2;
+    boolean bProfile2=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

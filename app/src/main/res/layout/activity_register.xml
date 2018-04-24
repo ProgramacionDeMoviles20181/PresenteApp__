@@ -110,6 +110,7 @@
                 android:text="@string/profesor"
                 android:layout_marginLeft="20dp"
                 android:layout_gravity="left"
+                android:checked="true"
                 android:onClick="onRadioButtonClicked"/>
             <RadioButton android:id="@+id/rEstudiante"
                 android:layout_width="wrap_content"

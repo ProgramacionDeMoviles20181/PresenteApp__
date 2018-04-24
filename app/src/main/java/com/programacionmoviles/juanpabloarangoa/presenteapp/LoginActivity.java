@@ -34,6 +34,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
@@ -162,6 +163,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     Register2_goMainActiviy();
                 }else{
                     Toast.makeText(LoginActivity.this, "Autenticacion con Facebook no exitosa", Toast.LENGTH_SHORT).show();
+                    if(task.getException() instanceof FirebaseAuthUserCollisionException) {
+                        Toast.makeText(LoginActivity.this, "User with Email id already exists",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -405,7 +410,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Log.d()
+                            String Uid_user = task.getResult().getUser().getUid();
+                            Log.d("userID", Uid_user);
                             goMainActivity();
                         }else{
                            Log.d("Error!!!!!!!!!!!!!!!",task.toString());
