@@ -10,6 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.Adapters.AdapterCursos;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
+
 import java.util.ArrayList;
 
 
@@ -20,52 +28,60 @@ import java.util.ArrayList;
 
 public class CoursesFragment extends Fragment {
 
-    //private ArrayList<Curso> cursos;
-    private RecyclerView rvCursos;
-    private Button bLogoutFragment;
+    private ArrayList<Cursos> cursosList;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapterCursos;
+    private RecyclerView.LayoutManager layoutManager;
+
+    //Firebase mierdero
+    //private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
 
     public CoursesFragment() {
-        // Required empty public constructor
     }
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_cursos, container, false);
+        View view = inflater.inflate(R.layout.fragment_cursos, container, false);
 
-        rvCursos = (RecyclerView) v.findViewById(R.id.rvCursos);
-        bLogoutFragment = v.findViewById(R.id.bLogout);
+        recyclerView = view.findViewById(R.id.rvCursos);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
 
+        cursosList = new ArrayList<>();
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        rvCursos.setHasFixedSize(true);
+        adapterCursos = new AdapterCursos(cursosList, R.layout.cardview_cursos,getActivity());
+        recyclerView.setAdapter(adapterCursos);
 
-        // use a linear layout manager
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rvCursos.setLayoutManager(linearLayoutManager);
+        FirebaseDatabase.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        //inicializarDatos();
-        //inicializarAdaptador();
+        databaseReference.child("cursos").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                cursosList.clear();
+                if(dataSnapshot.exists()){
+                    for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                        Cursos cursos = snapshot.getValue(Cursos.class);
+                        cursosList.add(cursos);
+                    }
+                    adapterCursos.notifyDataSetChanged();
+                }
+            }
 
-        return v;
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return view;
     }
 
-    /*
-    public void inicializarDatos(){
-        cursos = new ArrayList<>();
-        cursos.add("Matematicas I", "UdeA", "MJ 14-16");
-        cursos.add("Control I", "UdeA", "WV 6-8");
-    }
-    */
-    /*
-    public CursoAdaptador adaptador;
-    private void inicializarAdaptador(){
-        adaptador = new CursoAdaptador(cursos,getActivity());
-        rvCursos.setAdapter(adaptador);
-    }
-    */
+
 }

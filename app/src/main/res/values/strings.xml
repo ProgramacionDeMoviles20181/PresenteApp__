@@ -28,6 +28,14 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nombre">Nombre</string>
+    <string name="edad">Edad</string>
+    <string name="profesor">Soy profe</string>
+    <string name="estudiante">Soy estudiante</string>
+    <string name="institucion">Institución</string>
+    <string name="carnet">Carnet</string>
+    <string name="celular">Celular</string>
+    <string name="edad2">Edad</string>
 
 
 </resources>

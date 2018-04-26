@@ -5,8 +5,15 @@ package com.programacionmoviles.juanpabloarangoa.presenteapp.modelo;
  */
 
 public class Users {
-    private String id, nombre;
+    private String id, nombre, foto;
     private int edad;
+
+    public Users(String id, String nombre,  int edad, String foto) {
+        this.id = id;
+        this.nombre = nombre;
+        this.edad = edad;
+        this.foto = foto;
+    }
 
     public Users(String id, String nombre,  int edad) {
         this.id = id;
@@ -14,7 +21,15 @@ public class Users {
         this.edad = edad;
     }
 
-    public Users(){}
+    public Users(){}    //Es necesario crear un constructor vacío
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
 
     public String getId() {
         return id;
