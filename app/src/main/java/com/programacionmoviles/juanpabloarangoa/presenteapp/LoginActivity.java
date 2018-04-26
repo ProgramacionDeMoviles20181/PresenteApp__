@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                Log.d("Firebase Message",task.getResult().toString());
+//                Log.d("Firebase Message",task.getResult().toString());
                 if(task.isSuccessful()){
                     //codigo original aca abajo
                     //goMainActivity();
@@ -165,10 +165,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                     Register2_goMainActiviy();
                 }else{
-                    Toast.makeText(LoginActivity.this, "Autenticacion con Facebook no exitosa", Toast.LENGTH_SHORT).show();
-                    if(task.getException() instanceof FirebaseAuthUserCollisionException) {
-                        Toast.makeText(LoginActivity.this, "User with Email id already exists",
-                                Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Autenticacion con Facebook no exitosa, correo ya existente", Toast.LENGTH_SHORT).show();
+                    if(LoginManager.getInstance() != null){
+                        LoginManager.getInstance().logOut();
                     }
                 }
             }

@@ -34,6 +34,9 @@ public class Register2Activity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         eName2.setText(extras.getString("EXTRA_NAME"));
         eMail2.setText(extras.getString("EXTRA_EMAIL"));
+
+        eName2.setEnabled(false);
+        eMail2.setEnabled(false);
     }
 
     public void onBackPressed() {
