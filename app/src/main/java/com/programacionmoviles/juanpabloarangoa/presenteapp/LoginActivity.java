@@ -67,6 +67,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private LoginButton btnSignInFacebook;
 
     private String sInstitucion, sCedula, sCelular;
+    private String sEmail,sPass;
+    private String sName;
     int iEdad;
     private boolean bProfe;
 
@@ -244,6 +246,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == registerRequest && resultCode == RESULT_OK){
             Toast.makeText(this,"Registro Completado", Toast.LENGTH_LONG).show();
+
+            eMail.setEnabled(false);
+            ePassword.setEnabled(false);
+
+            Bundle extras = data.getExtras();
+            sName        = extras.getString("EXTRA_NOMBRE");
+            iEdad        = extras.getInt("EXTRA_EDAD");
+            sCedula      = extras.getString("EXTRA_CARNET");
+            sInstitucion = extras.getString("EXTRA_INSTITUCION");
+            sEmail       = extras.getString("EXTRA_CORREO");
+            sPass        = extras.getString("EXTRA_PASSWORD");
+            bProfe       = extras.getBoolean("EXTRA_PERFIL");
+            logInTask(sEmail,sPass);
         }else if(requestCode == registerRequest && resultCode == RESULT_CANCELED){
             Toast.makeText(this,"Registro Cancelado" , Toast.LENGTH_LONG).show();
         }else if(requestCode == google_login_request) {
@@ -405,7 +420,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-
     public void onButtonClick(View view) {
         String mail,passw;
         mail  = eMail.getText().toString();
@@ -425,13 +439,84 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         if(task.isSuccessful()){
                             String Uid_user = task.getResult().getUser().getUid();
                             Log.d("userID", Uid_user);
-                            goMainActivity();
+                            createCuenta(Uid_user);
                         }else{
                            Log.d("Error!!!!!!!!!!!!!!!",task.toString());
                            Toast.makeText(LoginActivity.this,"error en inicio de sesión" , Toast.LENGTH_LONG).show();
                         }
                     }
                 });
+    }
+
+    private void createCuenta(String id) {
+        final String Uid_user = id;
+
+        FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        if(bProfe){
+            databaseReference.child("profesores").child(id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        Log.d("CreateCuenta():", "usuario creado");
+                    }else{
+                        Log.d("CreateCuenta():", "usuario no creado");
+                        Profesor profe = new Profesor(Uid_user,
+                                sName,
+                                sCelular,
+                                iEdad,
+                                "",
+                                sCedula,
+                                sInstitucion);
+
+
+                        databaseReference.child("profesores").child(Uid_user).setValue(profe);
+
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }else{
+            //Es estudiante
+
+            databaseReference.child("estudiantes").child(id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        Log.d("CreateCuenta():", "usuario creado");
+                    }else{
+                        Log.d("CreateCuenta():", "usuario no creado");
+                        Estudiantes est = new Estudiantes(Uid_user,
+                                sName,
+                                sCelular,
+                                iEdad,
+                                "",
+                                sCedula,
+                                sInstitucion);
+
+
+                        databaseReference.child("estudiantes").child(Uid_user).setValue(est);
+
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+        goMainActivity();
     }
 
 
