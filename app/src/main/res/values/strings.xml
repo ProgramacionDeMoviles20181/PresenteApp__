@@ -36,6 +36,13 @@
     <string name="carnet">Carnet</string>
     <string name="celular">Celular</string>
     <string name="edad2">Edad</string>
+    <string name="perdircodigo">Por favor ingresa el código del curso</string>
+    <string name="codigo">Codigo</string>
+    <string name="ingresar">Ingresar Curso</string>
+    <string name="curso">Curso</string>
+    <string name="aula">Aula</string>
+    <string name="horario">Horario</string>
+    <string name="agregar">Agregar Curso</string>
 
 
 </resources>

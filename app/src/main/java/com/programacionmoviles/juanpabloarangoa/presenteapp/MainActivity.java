@@ -22,9 +22,15 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_logout;
 
-public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout {
+public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout,comunicador_addcourse {
 
     FragmentManager fm;
     FragmentTransaction ft;
@@ -32,6 +38,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private GoogleApiClient mGoogleApiClient;
+    private boolean bProfe;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -65,6 +72,8 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        isProfe();
 
         inicializeFirebaseLogin();
 
@@ -178,6 +187,45 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
     }
 
+    @Override
+    public void addCourse() {
+
+        ft = fm.beginTransaction();
+        if(bProfe){
+            //Es profesor
+            //Inflo el fragment del profe
+            addCourseProfeFragment faddCourseProfe = new addCourseProfeFragment();
+            ft.replace(R.id.frame, faddCourseProfe).commit();
+        }else{
+            //Es estudiante
+            //Inflo el fragment del estudiante
+            addCourseStudentFragment faddCourseStudent = new addCourseStudentFragment();
+            ft.replace(R.id.frame, faddCourseStudent).commit();
+
+        }
+
+    }
+
+    private void isProfe(){
+
+        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        databaseReference.child("estudiantes").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                    bProfe = !dataSnapshot.exists();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
 
 
