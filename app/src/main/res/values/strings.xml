@@ -43,6 +43,7 @@
     <string name="aula">Aula</string>
     <string name="horario">Horario</string>
     <string name="agregar">Agregar Curso</string>
+    <string name="numeroestu">Numero de estudiantes</string>
 
 
 </resources>
