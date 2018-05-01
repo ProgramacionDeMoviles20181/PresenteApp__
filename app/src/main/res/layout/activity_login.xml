@@ -1,100 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.programacionmoviles.juanpabloarangoa.presenteapp.LoginActivity">
+    tools:context="com.programacionmoviles.juanpabloarangoa.presenteapp.LoginActivity"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="7">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/profesor"
-            tools:ignore="contentDescription"
-            />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp">
-
-        <EditText
-            android:id="@+id/eMail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="23dp"
-            android:inputType="textEmailAddress"
-            android:hint="@string/mail"
-            />
-        <EditText
-            android:id="@+id/ePassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:inputType="textPassword"
-            android:hint="@string/password"
-            />
-        <Button
-            android:id="@+id/bLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textAllCaps="false"
-            android:text="@string/login"
-            android:background="@color/skyblue"
-            android:textSize="20sp"
-            android:onClick="onButtonClick"
-            />
-
-
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_horizontal"
-            android:background="@color/skyblue">
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/bGoogleLogin"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7">
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"/>
-            <com.facebook.login.widget.LoginButton
-                xmlns:fb="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/btnSignInFacebook"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_gravity="center_horizontal"
-                fb:com_facebook_login_text="   Acceder"
-                fb:com_facebook_logout_text="    Salir"
+                android:layout_height="match_parent"
+                android:src="@drawable/profesor"
+                tools:ignore="contentDescription"
                 />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tRegister"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            android:textColor="@color/blue"
-            android:text="@string/registerMsg"
-            android:onClick="onTextClick"/>
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/eMail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="23dp"
+                android:inputType="textEmailAddress"
+                android:hint="@string/mail"
+                />
+            <EditText
+                android:id="@+id/ePassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:inputType="textPassword"
+                android:hint="@string/password"
+                />
+            <Button
+                android:id="@+id/bLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAllCaps="false"
+                android:text="@string/login"
+                android:background="@color/skyblue"
+                android:textSize="20sp"
+                android:onClick="onButtonClick"
+                />
+
+
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/skyblue">
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/bGoogleLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"/>
+                <com.facebook.login.widget.LoginButton
+                    xmlns:fb="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/btnSignInFacebook"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center_horizontal"
+                    fb:com_facebook_login_text="   Acceder"
+                    fb:com_facebook_logout_text="    Salir"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="25dp"
+                android:textColor="@color/blue"
+                android:text="@string/registerMsg"
+                android:onClick="onTextClick"
+                android:layout_marginBottom="20dp"/>
+        </LinearLayout>
+
+
+
     </LinearLayout>
 
 
 
-</LinearLayout>
-
+</ScrollView>

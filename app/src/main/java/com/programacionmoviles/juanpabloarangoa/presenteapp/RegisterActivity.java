@@ -19,15 +19,17 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText eName,eMail,ePassword,eRepPassword, eUniversity, eCarnet, eMobile;
+    private EditText eName,eMail,ePassword,eRepPassword, eUniversity, eCarnet, eMobile,eEdad;
 
     private String sUniversity, sCarnet, sMobile, sName;
 
-    String pass1,pass2;
+    private String pass1,pass2;
 
-    String sMail;
+    private String sMail;
 
-    boolean bProfile = true;
+    private boolean bProfile = true;
+    private int iEdad;
+
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
@@ -47,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
         eUniversity = findViewById(R.id.eInstitucion);
         eCarnet = findViewById(R.id.eCarnet);
         eMobile = findViewById(R.id.eCelular);
+        eEdad   = findViewById(R.id.eEdad);
 
     }
 
@@ -59,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void onButtonClick(View view) {
         Intent intent = new Intent();
 
-
+        iEdad = Integer.parseInt(eEdad.getText().toString());
 
         sUniversity = eUniversity.getText().toString();
         sCarnet = eCarnet.getText().toString();
@@ -83,6 +86,13 @@ public class RegisterActivity extends AppCompatActivity {
                     }else{
                         createAccount(sMail,pass1);
                         verifyFirebaseDataBase();
+                        intent.putExtra("EXTRA_NOMBRE", sName);
+                        intent.putExtra("EXTRA_EDAD",iEdad);
+                        intent.putExtra("EXTRA_CARNET", sCarnet);
+                        intent.putExtra("EXTRA_INSTITUCION", sUniversity);
+                        intent.putExtra("EXTRA_CORREO", sMail);
+                        intent.putExtra("EXTRA_PASSWORD", pass1);
+                        intent.putExtra("EXTRA_PERFIL", bProfile);
                         setResult(RESULT_OK, intent);
                         finish();
                     }
