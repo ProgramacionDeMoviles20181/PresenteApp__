@@ -82,8 +82,8 @@ public class addCourseStudentFragment extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
                             //Agrego al estudiante en la tabla cursos
-                            EstudianteCurso estudianteCurso = new EstudianteCurso(sCedula,firebaseUser.getUid());
-                            databaseReference.child("cursos").child(sCodigoCurso).child("estudiantes").child(firebaseUser.getUid()).setValue(estudianteCurso);
+                            EstudianteCurso estudianteCurso = new EstudianteCurso(firebaseUser.getUid(),sCedula);
+                            databaseReference.child("cursos").child(sCodigoCurso).child("estudiantes").child(sCedula).setValue(estudianteCurso);
                             Toast.makeText(getActivity(),"Matricula Exitosa",Toast.LENGTH_SHORT).show();
                         }
                     }

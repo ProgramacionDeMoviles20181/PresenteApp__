@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.Adapters.AdapterCursos;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.EstudianteCurso;
 
 import java.util.ArrayList;
 
@@ -39,6 +40,8 @@ public class CoursesFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapterCursos;
     private RecyclerView.LayoutManager layoutManager;
+
+    private String sCedula;
 
     //Firebase mierdero
     //private FirebaseDatabase firebaseDatabase;

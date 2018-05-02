@@ -17,7 +17,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.programacionmoviles.juanpabloarangoa.presenteapp.R;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
 
 /**
@@ -62,6 +61,7 @@ public class addCourseProfeFragment extends Fragment {
                 final String sCourseSchool = eCourseSchool.getText().toString();
                 final int iNumberStu = Integer.parseInt(eNroStu.getText().toString());
 
+
                 //Generate random code for the course
                 final String  sCode = sName.substring(0,2) + sCourseSchool.substring(0,2) + sSchedule.substring(0,2) + sCourseClassroom.substring(0,2);
 
@@ -71,7 +71,10 @@ public class addCourseProfeFragment extends Fragment {
                         if(dataSnapshot.exists()){
                             //No haga nada
                         }else{
+                            //falta mirar como añadir posición actual del profe
                             Cursos curso = new Cursos(sCourseClassroom,
+                                    6.1875752,
+                                    -75.6524865,
                                     sCode,
                                     firebaseUser.getDisplayName(),
                                     firebaseUser.getUid(),

@@ -2,6 +2,8 @@ package com.programacionmoviles.juanpabloarangoa.presenteapp.modelo;
 
 public class Cursos {
     private String aula;
+    private double latitud_aula;
+    private double longitud_aula;
     private String codigo;
     private String docente;
     private String id_docente;
@@ -13,8 +15,10 @@ public class Cursos {
 
     public Cursos(){}
 
-    public Cursos(String aula, String codigo, String docente, String id_docente, String horario, String institucion, String nombre, int nro_estudiantes) {
+    public Cursos(String aula, double latitud_aula, double longitud_aula, String codigo, String docente, String id_docente, String horario, String institucion, String nombre, int nro_estudiantes) {
         this.aula = aula;
+        this.latitud_aula = latitud_aula;
+        this.longitud_aula = longitud_aula;
         this.codigo = codigo;
         this.docente = docente;
         this.id_docente = id_docente;
@@ -30,6 +34,22 @@ public class Cursos {
 
     public void setAula(String aula) {
         this.aula = aula;
+    }
+
+    public double getLatitud_aula() {
+        return latitud_aula;
+    }
+
+    public void setLatitud_aula(double latitud_aula) {
+        this.latitud_aula = latitud_aula;
+    }
+
+    public double getLongitud_aula() {
+        return longitud_aula;
+    }
+
+    public void setLongitud_aula(double longitud_aula) {
+        this.longitud_aula = longitud_aula;
     }
 
     public String getCodigo() {

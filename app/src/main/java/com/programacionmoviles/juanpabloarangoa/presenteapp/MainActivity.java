@@ -29,6 +29,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_logout;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Profesor;
 
 public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout,comunicador_addcourse {
 
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
     private FirebaseAuth.AuthStateListener authStateListener;
     private GoogleApiClient mGoogleApiClient;
     private boolean bProfe;
+    private String sCedula;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
