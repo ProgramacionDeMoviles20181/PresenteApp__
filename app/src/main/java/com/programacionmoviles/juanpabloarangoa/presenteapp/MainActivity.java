@@ -198,14 +198,28 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
             //Es profesor
             //Inflo el fragment del profe
             addCourseProfeFragment faddCourseProfe = new addCourseProfeFragment();
-            ft.replace(R.id.frame, faddCourseProfe).commit();
+            ft.replace(R.id.frame, faddCourseProfe).addToBackStack("home").commit();
+            fm.executePendingTransactions();
         }else{
             //Es estudiante
             //Inflo el fragment del estudiante
             addCourseStudentFragment faddCourseStudent = new addCourseStudentFragment();
-            ft.replace(R.id.frame, faddCourseStudent).commit();
+            ft.replace(R.id.frame, faddCourseStudent).addToBackStack("home").commit();
+            fm.executePendingTransactions();
 
         }
+
+    }
+
+    @Override
+    public void returnCourse() {
+        getFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void returnCourse2() {
+        ft = fm.beginTransaction();
+        getFragmentManager().popBackStack();
 
     }
 
@@ -232,6 +246,23 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
                 }
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+
+            getSupportFragmentManager().popBackStack();
+            //Toast.makeText(MainActivity.this,"Acción Cancelada",Toast.LENGTH_SHORT).show();
+
+            //additional code
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
+
     }
 }
 

@@ -1,6 +1,7 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
 
 /**
@@ -25,6 +27,7 @@ import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
 public class addCourseProfeFragment extends Fragment {
 
     EditText eCourseName, eCourseSchedule, eCourseClassroom, eCourseSchool, eNroStu;
+    comunicador_addcourse interfaz;
 
     Button bAgregar;
 
@@ -89,6 +92,7 @@ public class addCourseProfeFragment extends Fragment {
                             Toast.makeText(getActivity(),"Curso ingresado exitosamente",Toast.LENGTH_SHORT).show();
 
                         }
+                        interfaz.returnCourse();
                     }
 
                     @Override
@@ -109,6 +113,18 @@ public class addCourseProfeFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try{
+            (interfaz) = (comunicador_addcourse) activity;
+        }catch (ClassCastException e){
+            throw new ClassCastException(getActivity().toString()+"must implement comunicador");
+        }
+
+
+    }
 
 
 }

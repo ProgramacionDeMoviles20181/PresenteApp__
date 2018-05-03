@@ -143,6 +143,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if(dataSnapshot.exists()){
                                 goMainActivity();
+                            }else{
+                                Register2_goMainActiviy();
                             }
                         }
 
@@ -156,6 +158,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if(dataSnapshot.exists()){
                                 goMainActivity();
+                            }else{
+                                Register2_goMainActiviy();
                             }
                         }
 
@@ -164,8 +168,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                         }
                     });
-
-                    Register2_goMainActiviy();
                 }else{
                     Toast.makeText(LoginActivity.this, "Autenticacion con Facebook no exitosa, correo ya existente", Toast.LENGTH_SHORT).show();
                     if(LoginManager.getInstance() != null){
@@ -196,6 +198,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         //Poner en el intent los datos que me jale del usuario e ir a register2
         intent.putExtra("EXTRA_EMAIL", sMail);
         intent.putExtra("EXTRA_NAME", sName);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivityForResult(intent,register2Request);
 
         //Tal vez en el on activity result pueda poner que si es exitoso vaya al main
@@ -302,7 +306,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            //goMainActivity();
                             String Uid_user = task.getResult().getUser().getUid();
                             FirebaseDatabase.getInstance();
                             final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -311,6 +314,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if(dataSnapshot.exists()){
                                         goMainActivity();
+                                    }else{
+                                        Register2_goMainActiviy();
                                     }
                                 }
 
@@ -324,6 +329,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if(dataSnapshot.exists()){
                                         goMainActivity();
+                                    }else{
+                                        Register2_goMainActiviy();
                                     }
                                 }
 
@@ -332,8 +339,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                                 }
                             });
-
-                            Register2_goMainActiviy();
                         }
                     });
         }else{
@@ -343,6 +348,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void goMainActivity() {
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();
     }
@@ -558,5 +565,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
     }
 }

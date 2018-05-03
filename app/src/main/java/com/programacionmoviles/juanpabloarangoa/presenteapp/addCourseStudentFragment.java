@@ -1,6 +1,7 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.EstudianteCurso;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
 
@@ -27,6 +29,7 @@ import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
 public class addCourseStudentFragment extends Fragment {
 
     EditText eCourseCode;
+    comunicador_addcourse interfaz;
 
     Button bAgregarcest;
 
@@ -86,6 +89,7 @@ public class addCourseStudentFragment extends Fragment {
                             databaseReference.child("cursos").child(sCodigoCurso).child("estudiantes").child(sCedula).setValue(estudianteCurso);
                             Toast.makeText(getActivity(),"Matricula Exitosa",Toast.LENGTH_SHORT).show();
                         }
+                        interfaz.returnCourse2();
                     }
 
                     @Override
@@ -93,7 +97,6 @@ public class addCourseStudentFragment extends Fragment {
 
                     }
                 });
-
             }
         });
 
@@ -103,5 +106,20 @@ public class addCourseStudentFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try{
+            (interfaz) = (comunicador_addcourse) activity;
+        }catch (ClassCastException e){
+            throw new ClassCastException(getActivity().toString()+"must implement comunicador");
+        }
+
+
+    }
+
+
 
 }
