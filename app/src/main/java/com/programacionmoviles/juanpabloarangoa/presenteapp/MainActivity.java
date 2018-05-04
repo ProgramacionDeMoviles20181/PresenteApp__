@@ -22,9 +22,17 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_logout;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Profesor;
 
-public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout {
+public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout,comunicador_addcourse {
 
     FragmentManager fm;
     FragmentTransaction ft;
@@ -32,6 +40,8 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private GoogleApiClient mGoogleApiClient;
+    private boolean bProfe;
+    private String sCedula;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -67,6 +77,8 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
         setContentView(R.layout.activity_main);
 
         inicializeFirebaseLogin();
+
+        isProfe();
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
@@ -178,6 +190,80 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
     }
 
+    @Override
+    public void addCourse() {
+
+        ft = fm.beginTransaction();
+        if(bProfe){
+            //Es profesor
+            //Inflo el fragment del profe
+            addCourseProfeFragment faddCourseProfe = new addCourseProfeFragment();
+            ft.replace(R.id.frame, faddCourseProfe).addToBackStack("home").commit();
+            fm.executePendingTransactions();
+        }else{
+            //Es estudiante
+            //Inflo el fragment del estudiante
+            addCourseStudentFragment faddCourseStudent = new addCourseStudentFragment();
+            ft.replace(R.id.frame, faddCourseStudent).addToBackStack("home").commit();
+            fm.executePendingTransactions();
+
+        }
+
+    }
+
+    @Override
+    public void returnCourse() {
+        getFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void returnCourse2() {
+        ft = fm.beginTransaction();
+        getFragmentManager().popBackStack();
+
+    }
+
+    private void isProfe(){
+
+        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        if(firebaseUser == null){
+            goLoginActivity();
+        }else{
+            databaseReference.child("estudiantes").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    bProfe = !dataSnapshot.exists();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+
+            getSupportFragmentManager().popBackStack();
+            //Toast.makeText(MainActivity.this,"Acción Cancelada",Toast.LENGTH_SHORT).show();
+
+            //additional code
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
+
+    }
 }
 
 

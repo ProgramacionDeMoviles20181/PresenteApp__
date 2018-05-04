@@ -35,6 +35,17 @@
             />
 
         <EditText
+            android:id="@+id/eEdad"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:inputType="number"
+            android:hint="@string/edad"
+            />
+
+        <EditText
             android:id="@+id/eCarnet"
             android:layout_width="match_parent"
             android:layout_height="0dp"

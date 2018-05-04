@@ -1,7 +1,9 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.Adapters.AdapterCursos;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.EstudianteCurso;
 
 import java.util.ArrayList;
 
@@ -28,10 +32,16 @@ import java.util.ArrayList;
 
 public class CoursesFragment extends Fragment {
 
+    comunicador_addcourse interfaz;
+
+    FloatingActionButton fabPlus;
+
     private ArrayList<Cursos> cursosList;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapterCursos;
     private RecyclerView.LayoutManager layoutManager;
+
+    private String sCedula;
 
     //Firebase mierdero
     //private FirebaseDatabase firebaseDatabase;
@@ -47,6 +57,14 @@ public class CoursesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cursos, container, false);
+
+        fabPlus = view.findViewById(R.id.faPlus);
+        fabPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                interfaz.addCourse();
+            }
+        });
 
         recyclerView = view.findViewById(R.id.rvCursos);
         recyclerView.setHasFixedSize(true);
@@ -81,6 +99,19 @@ public class CoursesFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try{
+            (interfaz) = (comunicador_addcourse) activity;
+        }catch (ClassCastException e){
+            throw new ClassCastException(getActivity().toString()+"must implement comunicador");
+        }
+
+
     }
 
 

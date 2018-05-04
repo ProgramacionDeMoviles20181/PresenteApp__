@@ -1,11 +1,10 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 public class Register2Activity extends AppCompatActivity {
@@ -40,6 +39,7 @@ public class Register2Activity extends AppCompatActivity {
     }
 
     public void onBackPressed() {
+        Toast.makeText(this,"Registro Cancelado", Toast.LENGTH_LONG).show();
         setResult(RESULT_CANCELED);//status del request
         finish();
         super.onBackPressed();
@@ -81,4 +81,10 @@ public class Register2Activity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+
+        finish();
+        super.onPause();
+    }
 }
