@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_isprofe;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_logout;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Profesor;
@@ -59,7 +60,11 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
                     ft.replace(R.id.frame, fHome).commit();
                     return true;
                 case R.id.navigation_cursos:
+                    Bundle args = new Bundle();
+                    args.putBoolean("isprofe",bProfe);
+
                     CoursesFragment fCourses = new CoursesFragment();
+                    fCourses.setArguments(args);
                     ft.replace(R.id.frame, fCourses).commit();
                     return true;
                 case R.id.navigation_clase:
@@ -264,6 +269,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
         }
 
     }
+
 }
 
 
