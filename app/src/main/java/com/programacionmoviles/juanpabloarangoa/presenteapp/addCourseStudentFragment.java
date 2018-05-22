@@ -64,37 +64,12 @@ public class addCourseStudentFragment extends Fragment {
                 final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 databaseReference = FirebaseDatabase.getInstance().getReference();
 
-               databaseReference.child("estudianteCurso").addValueEventListener(new ValueEventListener() {
-                   @Override
-                   public void onDataChange(DataSnapshot dataSnapshot) {
-                       if(dataSnapshot.exists()){
-                           //No hago nada
-                       }else{
-                           //Agrego al estudiante... lo matriculo
-                           EstudianteCurso estudianteCurso = new EstudianteCurso(firebaseUser.getUid(),sCodigoCurso);
-
-
-                           //No se en el segundo child si poner un contador o dejar el id del usuario
-                           databaseReference.child("matriculas").child(String.valueOf(cont)).setValue(estudianteCurso);
-                           cont ++;
-                       }
-                   }
-
-                   @Override
-                   public void onCancelled(DatabaseError databaseError) {
-
-                   }
-               });
-                /*
-                //Extraer cedula del estudiante
-
                 databaseReference.child("estudiantes").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            Estudiantes estudiantes = dataSnapshot.getValue(Estudiantes.class);
-                            sCedula = estudiantes.getCedula();
-                        }
+                        final Estudiantes estudiante = dataSnapshot.getValue(Estudiantes.class);
+                        cont = estudiante.getnCursos();
+                        //PrUdWV10
                     }
 
                     @Override
@@ -103,23 +78,32 @@ public class addCourseStudentFragment extends Fragment {
                     }
                 });
 
-                databaseReference.child("cursos").child(sCodigoCurso).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            //Agrego al estudiante en la tabla cursos
-                            EstudianteCurso estudianteCurso = new EstudianteCurso(firebaseUser.getUid(),sCedula);
-                            databaseReference.child("cursos").child(sCodigoCurso).child("estudiantes").child(sCedula).setValue(estudianteCurso);
-                            Toast.makeText(getActivity(),"Matricula Exitosa",Toast.LENGTH_SHORT).show();
-                        }
-                        interfaz.returnCourse2();
-                    }
+                databaseReference.child("matriculas").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+                   @Override
+                   public void onDataChange(DataSnapshot dataSnapshot) {
+                       boolean bIsNotInDatabase = true;
+                       for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                           String str = (String) snapshot.getValue();
+                           if(str.equals(sCodigoCurso)){
+                               bIsNotInDatabase = false;
+                           }
+                       }
+                       if(bIsNotInDatabase) {
+                           databaseReference.child("matriculas").child(firebaseUser.getUid()).child(String.valueOf(cont)).setValue(sCodigoCurso);
+                           cont++;
+                           databaseReference.child("estudiantes").child(firebaseUser.getUid()).child("nCursos").setValue(cont);
+                           Toast.makeText(getActivity(),"Curso Agregado",Toast.LENGTH_SHORT).show();
+                       }else{
+                           //error menor, se entra al onDataChange() 2 veces al crear el curso
+                           //Toast.makeText(getActivity(),"El curso ya se encuentra agregado para esta cuenta",Toast.LENGTH_SHORT).show();
+                       }
+                   }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                   @Override
+                   public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });*/
+                   }
+                });
             }
         });
 

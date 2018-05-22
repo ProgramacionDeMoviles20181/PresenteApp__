@@ -406,7 +406,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 iEdad,
                                 "",
                                 sCedula,
-                                sInstitucion);
+                                sInstitucion,
+                                0);
 
 
                         databaseReference.child("estudiantes").child(firebaseUser.getUid()).setValue(est);
@@ -506,7 +507,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 iEdad,
                                 "",
                                 sCedula,
-                                sInstitucion);
+                                sInstitucion,
+                                0);
 
 
                         databaseReference.child("estudiantes").child(Uid_user).setValue(est);

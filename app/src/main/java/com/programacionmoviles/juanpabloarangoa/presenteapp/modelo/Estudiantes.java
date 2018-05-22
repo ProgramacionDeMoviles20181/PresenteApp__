@@ -8,11 +8,12 @@ public class Estudiantes {
     private String fotoLink;
     private String cedula;
     private String institucion;
+    private int nCursos;
 
     public Estudiantes() {
     }
 
-    public Estudiantes(String id, String nombre, String telefono, int edad, String fotoLink, String cedula, String institucion) {
+    public Estudiantes(String id, String nombre, String telefono, int edad, String fotoLink, String cedula, String institucion, int nCursos) {
         this.id = id;
         this.nombre = nombre;
         this.telefono = telefono;
@@ -20,6 +21,7 @@ public class Estudiantes {
         this.fotoLink = fotoLink;
         this.cedula = cedula;
         this.institucion = institucion;
+        this.nCursos = nCursos;
     }
 
     public String getId() {
@@ -76,6 +78,14 @@ public class Estudiantes {
 
     public void setInstitucion(String institucion) {
         this.institucion = institucion;
+    }
+
+    public int getnCursos() {
+        return nCursos;
+    }
+
+    public void setnCursos(int nCursos) {
+        this.nCursos = nCursos;
     }
 }
 
