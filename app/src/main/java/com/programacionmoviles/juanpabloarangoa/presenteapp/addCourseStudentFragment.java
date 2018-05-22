@@ -37,6 +37,7 @@ public class addCourseStudentFragment extends Fragment {
 
     DatabaseReference databaseReference;
 
+    int cont = 0;
 
     public addCourseStudentFragment() {
         // Required empty public constructor
@@ -63,6 +64,28 @@ public class addCourseStudentFragment extends Fragment {
                 final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 databaseReference = FirebaseDatabase.getInstance().getReference();
 
+               databaseReference.child("estudianteCurso").addValueEventListener(new ValueEventListener() {
+                   @Override
+                   public void onDataChange(DataSnapshot dataSnapshot) {
+                       if(dataSnapshot.exists()){
+                           //No hago nada
+                       }else{
+                           //Agrego al estudiante... lo matriculo
+                           EstudianteCurso estudianteCurso = new EstudianteCurso(firebaseUser.getUid(),sCodigoCurso);
+
+
+                           //No se en el segundo child si poner un contador o dejar el id del usuario
+                           databaseReference.child("matriculas").child(String.valueOf(cont)).setValue(estudianteCurso);
+                           cont ++;
+                       }
+                   }
+
+                   @Override
+                   public void onCancelled(DatabaseError databaseError) {
+
+                   }
+               });
+                /*
                 //Extraer cedula del estudiante
 
                 databaseReference.child("estudiantes").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
@@ -96,7 +119,7 @@ public class addCourseStudentFragment extends Fragment {
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                });
+                });*/
             }
         });
 

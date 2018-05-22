@@ -50,6 +50,7 @@ public class CoursesFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
 
     private String sCedula;
+    private String codigo_curso;
 
     //Firebase mierdero
     //private FirebaseDatabase firebaseDatabase;
@@ -103,26 +104,31 @@ public class CoursesFragment extends Fragment {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
+        /*
         databaseReference.child("cursos").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 cursosList.clear();
                 if(dataSnapshot.exists()){
                     for(DataSnapshot snapshot:dataSnapshot.getChildren()){
-                        Cursos cursos = snapshot.getValue(Cursos.class);
+                        final Cursos cursos = snapshot.getValue(Cursos.class);
 
                         if(boolProfe){
+                            //Log.d("Entrando",cursos.getId_docente());
+                            String id_docente = cursos.getId_docente();
+                            String id_user = firebaseUser.getUid();
                             //Is a teacher, so I can check if he is in the courses in order to display just the courses he teaches
-                            if(cursos.getId_docente() == firebaseUser.getUid()){
+                            if(id_docente.equals(id_user)){
+                                //Log.d("Anadir","Anadiendo curso");
                                 //Add the course in the list to display
                                 cursosList.add(cursos);
                             }
                         }else {
                             //Is a student, so I can check if he is enrolled in the courses in order to display them
 
-                            //Por el momento los agrego todos porque no sé como extraer el id del estudiante de ahí adentro
-                            //para comparar con el uid del usuario actual
-                            cursosList.add(cursos);
+                            //Obtengo el codigo del curso
+                            databaseReference.child("matriculas").
+
                         }
 
                     }
@@ -135,7 +141,86 @@ public class CoursesFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
+
+        if(boolProfe){
+            databaseReference.child("cursos").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    cursosList.clear();
+                    if(dataSnapshot.exists()){
+                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                            Cursos cursos = snapshot.getValue(Cursos.class);
+
+                            String id_docente = cursos.getId_docente();
+                            String id_user = firebaseUser.getUid();
+                            //Is a teacher, so I can check if he is in the courses in order to display just the courses he teaches
+                            if(id_docente.equals(id_user)){
+                                //Log.d("Anadir","Anadiendo curso");
+                                //Add the course in the list to display
+                                cursosList.add(cursos);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }else {
+            //Is a student
+            //Getting the course codes where the student is enrolled
+            databaseReference.child("matriculas").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                            EstudianteCurso estudianteCurso = dataSnapshot.getValue(EstudianteCurso.class);
+                            //Creo que codigo cursos debería ser un array de strings para guardar los códigos y luego comparar abajo
+                            codigo_curso = estudianteCurso.getCodigoCurso();
+                        }
+
+                        EstudianteCurso estudianteCurso = dataSnapshot.getValue(EstudianteCurso.class);
+
+                        codigo_curso = estudianteCurso.getCodigoCurso();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            //Add the courses to the list to display
+            databaseReference.child("cursos").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    cursosList.clear();
+                    if(dataSnapshot.exists()){
+                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                            Cursos cursos = snapshot.getValue(Cursos.class);
+
+                            String cod_curso = cursos.getCodigo();
+                            //Is a teacher, so I can check if he is in the courses in order to display just the courses he teaches
+                            if(codigo_curso.equals(cod_curso)){
+                                //Log.d("Anadir","Anadiendo curso");
+                                //Add the course in the list to display
+                                cursosList.add(cursos);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }
 
 
         return view;
