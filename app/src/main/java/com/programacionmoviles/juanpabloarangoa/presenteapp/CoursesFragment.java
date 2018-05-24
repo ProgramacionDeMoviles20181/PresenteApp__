@@ -11,8 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,9 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.Adapters.AdapterCursos;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
-import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_isprofe;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
-import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.EstudianteCurso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +48,6 @@ public class CoursesFragment extends Fragment {
 
     private String sCedula;
 
-    //Firebase mierdero
-    //private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
 
     public CoursesFragment() {
@@ -197,8 +191,4 @@ public class CoursesFragment extends Fragment {
 
 
     }
-
-
-
-
 }

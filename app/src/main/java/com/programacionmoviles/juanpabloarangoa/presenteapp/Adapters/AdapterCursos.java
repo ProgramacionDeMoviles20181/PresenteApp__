@@ -1,9 +1,10 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp.Adapters;
 
 import android.app.Activity;
-import android.support.v7.widget.ActivityChooserView;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.test.ActivityUnitTestCase;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,9 @@ import android.widget.Toast;
 
 import com.programacionmoviles.juanpabloarangoa.presenteapp.R;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.ShowCouseFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class AdapterCursos extends RecyclerView.Adapter<AdapterCursos.CursoViewHolder> {
 
@@ -61,6 +62,7 @@ public class AdapterCursos extends RecyclerView.Adapter<AdapterCursos.CursoViewH
     public class CursoViewHolder extends RecyclerView.ViewHolder{
 
         private TextView tNombre, tAula, tHorario, tDocente, tCodigo, tInstitucion;
+        public View view;
 
         public CursoViewHolder(View itemView){
             super(itemView);
@@ -70,6 +72,23 @@ public class AdapterCursos extends RecyclerView.Adapter<AdapterCursos.CursoViewH
             tDocente = itemView.findViewById(R.id.tDocenteCurso);
             tCodigo = itemView.findViewById(R.id.tCodigoCurso);
             tInstitucion = itemView.findViewById(R.id.tInstitucionCurso);
+
+            view = itemView;
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+                   Log.d("viewOnClickListener: ",String.valueOf(getAdapterPosition()));
+                   Cursos cursoClicked = cursosList.get(getAdapterPosition());
+                    AppCompatActivity activity = (AppCompatActivity) view.getContext();
+
+                    Bundle args = new Bundle();
+                    args.putString("cursoCodigo",cursoClicked.getCodigo());
+
+                    ShowCouseFragment myFragment = new ShowCouseFragment();
+                    myFragment.setArguments(args);
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.frame, myFragment).addToBackStack(null).commit();
+                }
+            });
 
         }
 

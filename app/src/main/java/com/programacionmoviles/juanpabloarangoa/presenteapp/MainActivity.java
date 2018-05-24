@@ -30,10 +30,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_isprofe;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_logout;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_showCourse;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Profesor;
 
-public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout,comunicador_addcourse {
+public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout,comunicador_addcourse,comunicador_showCourse {
 
     FragmentManager fm;
     FragmentTransaction ft;
@@ -270,6 +271,10 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
     }
 
+    @Override
+    public boolean getProfileBool() {
+        return bProfe;
+    }
 }
 
 
