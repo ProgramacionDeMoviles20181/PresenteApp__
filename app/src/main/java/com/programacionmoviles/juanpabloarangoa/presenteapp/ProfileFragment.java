@@ -17,9 +17,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_getProfilePic;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_logout;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Profesor;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
@@ -27,11 +31,13 @@ import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Profesor;
  */
 public class ProfileFragment extends Fragment {
 
-    comunicador_logout interfaz;
+    private comunicador_logout interfaz;
+    private comunicador_getProfilePic intefaz2;
 
-    TextView tProfileName, tProfileMobile, tProfileEmail, tProfileSchool;
+    private TextView tProfileName, tProfileMobile, tProfileEmail, tProfileSchool;
 
     private DatabaseReference databaseReference;
+    private CircleImageView profileImage;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -50,22 +56,27 @@ public class ProfileFragment extends Fragment {
         tProfileMobile = rootView.findViewById(R.id.tProfileMobile);
         tProfileSchool = rootView.findViewById(R.id.tProfileSchool);
         tProfileName = rootView.findViewById(R.id.tProfileName);
+        profileImage = rootView.findViewById(R.id.iFoto1);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         FirebaseDatabase.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
+        //Picasso.get().load(url).into(iFoto);
         //Miro si es profesor
         databaseReference.child("profesores").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-
-                    tProfileName.setText(dataSnapshot.getValue(Profesor.class).getNombre());
+                    Profesor profe = dataSnapshot.getValue(Profesor.class);
+                    tProfileName.setText(profe.getNombre());
                     tProfileEmail.setText(firebaseUser.getEmail());
-                    tProfileMobile.setText(dataSnapshot.getValue(Profesor.class).getTelefono());
-                    tProfileSchool.setText(dataSnapshot.getValue(Profesor.class).getInstitucion());
+                    tProfileMobile.setText(profe.getTelefono());
+                    tProfileSchool.setText(profe.getInstitucion());
+                    String urlImage = profe.getFoto();
+                    Picasso.get().load(urlImage).into(profileImage);
+
 
                 }
             }
@@ -81,11 +92,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-
-                    tProfileName.setText(dataSnapshot.getValue(Estudiantes.class).getNombre());
+                    Estudiantes estudiante = dataSnapshot.getValue(Estudiantes.class);
+                    tProfileName.setText(estudiante.getNombre());
                     tProfileEmail.setText(firebaseUser.getEmail());
-                    tProfileMobile.setText(dataSnapshot.getValue(Estudiantes.class).getTelefono());
-                    tProfileSchool.setText(dataSnapshot.getValue(Estudiantes.class).getInstitucion());
+                    tProfileMobile.setText(estudiante.getTelefono());
+                    tProfileSchool.setText(estudiante.getInstitucion());
+                    String urlImage = estudiante.getFotoLink();
+                    Picasso.get().load(urlImage).into(profileImage);
 
                 }
             }
@@ -103,6 +116,13 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intefaz2.loadGalleryImage(profileImage.getId());
+            }
+        });
+
 
         return rootView;
     }
@@ -111,6 +131,8 @@ public class ProfileFragment extends Fragment {
         super.onAttach(activity);
         try{
             interfaz = (comunicador_logout) activity;
+            intefaz2 = (comunicador_getProfilePic) activity;
+
         }catch (ClassCastException e){
             throw new ClassCastException(getActivity().toString()+"must implement comunicador");
         }

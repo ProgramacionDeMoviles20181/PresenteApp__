@@ -1,7 +1,12 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +24,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -27,23 +34,40 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_getProfilePic;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_isprofe;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_logout;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_showCourse;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Profesor;
 
-public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout,comunicador_addcourse,comunicador_showCourse {
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class MainActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener,comunicador_logout,comunicador_addcourse,comunicador_showCourse,comunicador_getProfilePic {
 
     FragmentManager fm;
     FragmentTransaction ft;
+    private int requestStorage = 2817;
     Button bLogout;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private GoogleApiClient mGoogleApiClient;
     private boolean bProfe;
     private String sCedula;
+    private boolean bTransactionSuccessful = true;
+
+    private int idImage;
+
+    private ProgressDialog mProgress;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -274,6 +298,92 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
     @Override
     public boolean getProfileBool() {
         return bProfe;
+    }
+
+    @Override
+    public void loadGalleryImage(int idFoto) {
+        idImage = idFoto;
+
+        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.
+                INTERNAL_CONTENT_URI);
+        i.setType("image/*");
+        startActivityForResult(i, requestStorage);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        final Bitmap bitmap;
+
+        final CircleImageView iFoto;
+        iFoto = findViewById(idImage);
+
+        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        bTransactionSuccessful = true;
+        final DatabaseReference DBreference = FirebaseDatabase.getInstance().getReference();
+
+        StorageReference profilePicReference = storage.getReference().child("users/"+firebaseUser.getUid()+"/"+firebaseUser.getUid()+".jpg");
+
+
+        if (requestCode == requestStorage && resultCode == RESULT_OK) {
+            if (data == null) {
+                Toast.makeText(this, "Error cargando imagen", Toast.LENGTH_SHORT).show();
+            } else {
+                Uri imagen = data.getData();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                try {
+
+                    InputStream is = getContentResolver().openInputStream(imagen);
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    bitmap = BitmapFactory.decodeStream(is);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                    byte[] infoImage = baos.toByteArray();
+
+                    mProgress = new ProgressDialog( this );
+                    mProgress.setMessage("Subiendo...");
+                    mProgress.show();
+                    UploadTask uploadTask = profilePicReference.putBytes(infoImage);
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            mProgress.dismiss();
+                            bTransactionSuccessful = false;
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            mProgress.dismiss();
+                            Uri downloadUrl;
+                            downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
+                            String dwndurl = downloadUrl.toString();
+                            mProgress.dismiss();
+
+                            if(bProfe){
+                                DBreference.child("profesores").child(firebaseUser.getUid()).child("foto").setValue(dwndurl);
+                            }else{
+                                DBreference.child("estudiantes").child(firebaseUser.getUid()).child("fotoLink").setValue(dwndurl);
+                            }
+                            Toast.makeText(MainActivity.this, "Archivo subido exitosamente", Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    });
+                    if(bTransactionSuccessful){
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                        iFoto.setImageBitmap(bitmap);
+
+                    }else{
+                        Toast.makeText(MainActivity.this, "Error al subir archivo", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
 

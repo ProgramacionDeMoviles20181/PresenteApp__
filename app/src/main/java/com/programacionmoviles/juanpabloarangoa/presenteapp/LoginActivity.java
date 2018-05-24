@@ -373,7 +373,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 firebaseUser.getDisplayName(),
                                 sCelular,
                                 iEdad,
-                                "",
+                                "https://firebasestorage.googleapis.com/v0/b/presenteapp2.appspot.com/o/improfile.png?alt=media&token=c2644466-e2bc-4916-ba2c-c507427b6f10",
                                 sCedula,
                                 sInstitucion);
 
@@ -404,7 +404,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 firebaseUser.getDisplayName(),
                                 sCelular,
                                 iEdad,
-                                "",
+                                "https://firebasestorage.googleapis.com/v0/b/presenteapp2.appspot.com/o/improfile.png?alt=media&token=c2644466-e2bc-4916-ba2c-c507427b6f10",
                                 sCedula,
                                 sInstitucion,
                                 0);
@@ -474,7 +474,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 sName,
                                 sCelular,
                                 iEdad,
-                                "",
+                                "https://firebasestorage.googleapis.com/v0/b/presenteapp2.appspot.com/o/improfile.png?alt=media&token=c2644466-e2bc-4916-ba2c-c507427b6f10",
                                 sCedula,
                                 sInstitucion);
 
@@ -505,7 +505,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 sName,
                                 sCelular,
                                 iEdad,
-                                "",
+                                "https://firebasestorage.googleapis.com/v0/b/presenteapp2.appspot.com/o/improfile.png?alt=media&token=c2644466-e2bc-4916-ba2c-c507427b6f10",
                                 sCedula,
                                 sInstitucion,
                                 0);
