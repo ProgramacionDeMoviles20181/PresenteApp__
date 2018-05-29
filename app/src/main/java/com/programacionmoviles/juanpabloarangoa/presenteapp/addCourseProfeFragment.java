@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -55,6 +56,7 @@ public class addCourseProfeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_course_profe, container, false);
 
         locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+
         getLocation();
 
         eCourseName = view.findViewById(R.id.eCourseName);
@@ -101,7 +103,8 @@ public class addCourseProfeFragment extends Fragment {
                                     sSchedule,
                                     sCourseSchool,
                                     sName,
-                                    iNumberStu
+                                    iNumberStu,
+                                    false
                                     );
 
                             databaseReference.child("cursos").child(sCode).setValue(curso);
@@ -145,9 +148,23 @@ public class addCourseProfeFragment extends Fragment {
             //REQUEST_LOCATION = 1
 
         }else {
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location_gps = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location_net = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            Location location = null;
+            if(location_gps != null && location_net != null) {
+                if (location_gps.getAccuracy() > location_net.getAccuracy()) {
+                    location = location_gps;
+                } else {
+                    location = location_net;
+                }
+            }else if(location_gps != null){
+                location = location_gps;
+            }else if(location_net != null){
+                location = location_net;
+            }
 
             if(location != null){
+
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
                 Latitud=latitude;

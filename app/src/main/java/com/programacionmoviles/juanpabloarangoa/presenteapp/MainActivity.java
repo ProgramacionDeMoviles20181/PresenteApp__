@@ -93,7 +93,11 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
                     ft.replace(R.id.frame, fCourses).commit();
                     return true;
                 case R.id.navigation_clase:
+                    Bundle args1 = new Bundle();
+                    args1.putBoolean("isprofe",bProfe);
+
                     StartclassFragment fstartclass = new StartclassFragment();
+                    fstartclass.setArguments(args1);
                     ft.replace(R.id.frame, fstartclass).commit();
                     return true;
             }

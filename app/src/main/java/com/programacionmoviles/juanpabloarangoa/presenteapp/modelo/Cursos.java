@@ -11,11 +11,12 @@ public class Cursos {
     private String institucion;
     private String nombre;
     int nro_estudiantes;
+    private boolean isstarted;
 
 
     public Cursos(){}
 
-    public Cursos(String aula, double latitud_aula, double longitud_aula, String codigo, String docente, String id_docente, String horario, String institucion, String nombre, int nro_estudiantes) {
+    public Cursos(String aula, double latitud_aula, double longitud_aula, String codigo, String docente, String id_docente, String horario, String institucion, String nombre, int nro_estudiantes, boolean isstarted) {
         this.aula = aula;
         this.latitud_aula = latitud_aula;
         this.longitud_aula = longitud_aula;
@@ -26,6 +27,7 @@ public class Cursos {
         this.institucion = institucion;
         this.nombre = nombre;
         this.nro_estudiantes = nro_estudiantes;
+        this.isstarted = isstarted;
     }
 
     public String getAula() {
@@ -107,5 +109,9 @@ public class Cursos {
     public void setNro_estudiantes(int nro_estudiantes) {
         this.nro_estudiantes = nro_estudiantes;
     }
+
+    public boolean getisstarted(){return isstarted;}
+
+    public void setisstarted(boolean isstarted){this.isstarted = isstarted;}
 }
 
