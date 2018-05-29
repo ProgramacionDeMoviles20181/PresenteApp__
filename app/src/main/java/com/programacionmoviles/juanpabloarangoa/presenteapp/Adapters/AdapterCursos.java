@@ -1,6 +1,7 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp.Adapters;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -11,9 +12,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.programacionmoviles.juanpabloarangoa.presenteapp.MainActivity;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.R;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.ShowCourseActivity;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
-import com.programacionmoviles.juanpabloarangoa.presenteapp.ShowCouseFragment;
 
 import java.util.ArrayList;
 
@@ -81,12 +83,17 @@ public class AdapterCursos extends RecyclerView.Adapter<AdapterCursos.CursoViewH
                    Cursos cursoClicked = cursosList.get(getAdapterPosition());
                     AppCompatActivity activity = (AppCompatActivity) view.getContext();
 
-                    Bundle args = new Bundle();
+                    /*Bundle args = new Bundle();
                     args.putString("cursoCodigo",cursoClicked.getCodigo());
 
                     ShowCouseFragment myFragment = new ShowCouseFragment();
                     myFragment.setArguments(args);
                     activity.getSupportFragmentManager().beginTransaction().replace(R.id.frame, myFragment).addToBackStack(null).commit();
+
+                    */
+                    Intent intent = new Intent(view.getContext(), ShowCourseActivity.class);
+                    intent.putExtra("cursoCodigo",cursoClicked.getCodigo());
+                    view.getContext().startActivity(intent);
                 }
             });
 

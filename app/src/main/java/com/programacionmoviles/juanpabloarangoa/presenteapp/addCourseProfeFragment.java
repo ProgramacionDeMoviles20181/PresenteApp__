@@ -1,9 +1,17 @@
 package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +34,14 @@ import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
  */
 public class addCourseProfeFragment extends Fragment {
 
+    LocationManager locationManager;
+
     EditText eCourseName, eCourseSchedule, eCourseClassroom, eCourseSchool, eNroStu;
     comunicador_addcourse interfaz;
 
     Button bAgregar;
+
+    private double Latitud, Longitud;
 
     public addCourseProfeFragment() {
         // Required empty public constructor
@@ -42,6 +54,9 @@ public class addCourseProfeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_course_profe, container, false);
 
+        locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        getLocation();
+
         eCourseName = view.findViewById(R.id.eCourseName);
         eCourseClassroom = view.findViewById(R.id.eClassroom);
         eCourseSchedule = view.findViewById(R.id.eSchedule);
@@ -52,6 +67,7 @@ public class addCourseProfeFragment extends Fragment {
         bAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 final DatabaseReference databaseReference;
                 databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -65,6 +81,7 @@ public class addCourseProfeFragment extends Fragment {
                 final int iNumberStu = Integer.parseInt(eNroStu.getText().toString());
 
 
+
                 //Generate random code for the course
                 final String  sCode = sName.substring(0,2) + sCourseSchool.substring(0,2) + sSchedule.substring(0,2) + sCourseClassroom.substring(0,2);
 
@@ -76,8 +93,8 @@ public class addCourseProfeFragment extends Fragment {
                         }else{
                             //falta mirar como añadir posición actual del profe
                             Cursos curso = new Cursos(sCourseClassroom,
-                                    6.1875752,
-                                    -75.6524865,
+                                    Latitud,
+                                    Longitud,
                                     sCode,
                                     firebaseUser.getDisplayName(),
                                     firebaseUser.getUid(),
@@ -111,6 +128,38 @@ public class addCourseProfeFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void getLocation() {
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            //REQUEST_LOCATION = 1
+
+        }else {
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if(location != null){
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                Latitud=latitude;
+                Longitud=longitude;
+                Log.d("Latitud",Double.toString(latitude));
+                Log.d("Longitud", Double.toString(longitude));
+
+            }else{
+                Log.d("Not found","Unable to find location");
+            }
+        }
+
     }
 
     @Override

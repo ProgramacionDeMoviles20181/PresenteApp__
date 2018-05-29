@@ -95,7 +95,7 @@ public class addCourseStudentFragment extends Fragment {
                            Toast.makeText(getActivity(),"Curso Agregado",Toast.LENGTH_SHORT).show();
                        }else{
                            //error menor, se entra al onDataChange() 2 veces al crear el curso
-                           //Toast.makeText(getActivity(),"El curso ya se encuentra agregado para esta cuenta",Toast.LENGTH_SHORT).show();
+                           Toast.makeText(getActivity(),"El curso ya se encuentra agregado para esta cuenta",Toast.LENGTH_SHORT).show();
                        }
                    }
 
