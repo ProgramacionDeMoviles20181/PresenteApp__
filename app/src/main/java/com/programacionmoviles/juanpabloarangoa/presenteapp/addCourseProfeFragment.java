@@ -93,7 +93,10 @@ public class addCourseProfeFragment extends Fragment {
                         if(dataSnapshot.exists()){
                             //No haga nada
                         }else{
-                            //falta mirar como añadir posición actual del profe
+
+                            /*
+                            falta quitar espacios en sCode;
+                            */
                             Cursos curso = new Cursos(sCourseClassroom,
                                     Latitud,
                                     Longitud,

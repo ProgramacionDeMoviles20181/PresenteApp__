@@ -4,7 +4,7 @@ package com.programacionmoviles.juanpabloarangoa.presenteapp;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,12 +38,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
-import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.EstudianteCurso;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 
@@ -54,8 +52,8 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
 
     MapView mapView;
     GoogleMap mMap;
-    Context mContext;
     boolean boolProfe;
+    Cursos course;
 
     DatabaseReference databaseReference;
 
@@ -67,6 +65,8 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
     Estudiantes estudiante;
 
     private FusedLocationProviderClient mFusedLocationClient;
+    private double Latitud;
+    private double Longitud;
 
 
     public StartclassFragment() {
@@ -85,6 +85,7 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
         Bundle bundle = getArguments();
         boolProfe = bundle.getBoolean("isprofe");
 
+        locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         mapView = view.findViewById(R.id.map);
 
@@ -173,6 +174,7 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
                             tCurrentCourse.setText(str);
                             bStartclass.setEnabled(true);
                         }
+                        course = cursoActual;
                     }
                 }
 
@@ -264,6 +266,7 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
                             tCurrentCourse.setText(str);
                             bStartclass.setEnabled(true);
                         }
+                        course = cursoActual;
                     }
                 }
 
@@ -273,18 +276,131 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
                 }
             });
         }
+        bStartclass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(boolProfe){
+                    databaseReference.child("cursos").child(course.getCodigo()).child("isstarted").setValue(true);
+                    bStopclass.setEnabled(true);
+                    bStartclass.setEnabled(false);
+                }else{
+                    databaseReference.child(course.getCodigo()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                course = dataSnapshot.getValue(Cursos.class);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    if(course.getisstarted()){
+                        Calendar calendar = Calendar.getInstance();
+                        final int day = calendar.get(Calendar.DAY_OF_MONTH);
+                        final int month = calendar.get(Calendar.MONTH);
+                        databaseReference.child("Asistencias").child(course.getCodigo()).child(firebaseUser.getUid())
+                                .child(String.valueOf(day)+"_" +String.valueOf(month)).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(!dataSnapshot.exists()){
+                                    databaseReference.child("Asistencias").child(course.getCodigo()).child(firebaseUser.getUid())
+                                            .child(String.valueOf(day)+"_" +String.valueOf(month)).child("asistencia").setValue(true);
+                                    Toast.makeText(getContext(),"Usted ha ingresado a la clase",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getContext(),"Usted ya ha ingresado a la clase",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }else{
+                        Toast.makeText(getContext(),"La clase aún no ha comenzado",Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+        });
+
+        bStopclass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseReference.child("cursos").child(course.getCodigo()).child("isstarted").setValue(false);
+                bStopclass.setEnabled(false);
+                bStartclass.setEnabled(true);
+
+            }
+        });
 
         return view;
     }
 
+    private void getLocation() {
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            //REQUEST_LOCATION = 1
+
+        }else {
+            Location location_gps = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location_net = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            Location location = null;
+            if(location_gps != null && location_net != null) {
+                if (location_gps.getAccuracy() > location_net.getAccuracy()) {
+                    location = location_gps;
+                } else {
+                    location = location_net;
+                }
+            }else if(location_gps != null){
+                location = location_gps;
+            }else if(location_net != null){
+                location = location_net;
+            }
+
+            if(location != null){
+
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                Latitud=latitude;
+                Longitud=longitude;
+                Log.d("Latitud",Double.toString(latitude));
+                Log.d("Longitud", Double.toString(longitude));
+
+            }else{
+                Log.d("Not found","Unable to find location");
+            }
+        }
+
+    }
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        LatLng udea = new LatLng(6.26398554,-75.57021178);
-
-        mMap.addMarker(new MarkerOptions().position(udea).title("Universidad de Antioquia").snippet("Alma Mater").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(udea, 17));
+        LatLng courseLocation;
+        getLocation();
+        LatLng myLocation = new LatLng(Latitud, Longitud);
+        if(course != null){
+            courseLocation = new LatLng(course.getLatitud_aula(), course.getLongitud_aula());
+        }else {
+            courseLocation = new LatLng(6.26398554, -75.57021178);
+        }
+        mMap.addMarker(new MarkerOptions().position(courseLocation).title("Universidad de Antioquia").snippet("Alma Mater").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+        //mMap.addMarker(new MarkerOptions().position(myLocation).title("Universidad de Antioquia").snippet("Alma Mater").icon(BitmapDescriptorFactory.fromResource(R.drawable.improfile)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLocation, 17));
 
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
