@@ -4,6 +4,7 @@ package com.programacionmoviles.juanpabloarangoa.presenteapp;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.comunicaciones.comunicador_addcourse;
+import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.EstudianteCurso;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
 
@@ -28,6 +30,8 @@ import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
  */
 public class addCourseStudentFragment extends Fragment {
 
+    private boolean bIsNotInDatabase=true;
+
     EditText eCourseCode;
     comunicador_addcourse interfaz;
 
@@ -36,6 +40,9 @@ public class addCourseStudentFragment extends Fragment {
     String sCedula, sCodigoCurso;
 
     DatabaseReference databaseReference;
+
+    private Cursos curso = null;
+    private int n = 0;
 
     int cont = 0;
 
@@ -77,25 +84,18 @@ public class addCourseStudentFragment extends Fragment {
 
                     }
                 });
-
                 databaseReference.child("matriculas").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
                    @Override
                    public void onDataChange(DataSnapshot dataSnapshot) {
-                       boolean bIsNotInDatabase = true;
-                       for(DataSnapshot snapshot:dataSnapshot.getChildren()){
-                           String str = (String) snapshot.getValue();
-                           if(str.equals(sCodigoCurso)){
-                               bIsNotInDatabase = false;
+                       bIsNotInDatabase = true;
+                       if(dataSnapshot.exists()){
+                           for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                               String str = (String) snapshot.getValue();
+                               if(str.equals(sCodigoCurso)){
+                                   bIsNotInDatabase = false;
+                                   break;
+                               }
                            }
-                       }
-                       if(bIsNotInDatabase) {
-                           databaseReference.child("matriculas").child(firebaseUser.getUid()).child(String.valueOf(cont)).setValue(sCodigoCurso);
-                           cont++;
-                           databaseReference.child("estudiantes").child(firebaseUser.getUid()).child("nCursos").setValue(cont);
-                           Toast.makeText(getActivity(),"Curso Agregado",Toast.LENGTH_SHORT).show();
-                       }else{
-                           //error menor, se entra al onDataChange() 2 veces al crear el curso
-                           Toast.makeText(getActivity(),"El curso ya se encuentra agregado para esta cuenta",Toast.LENGTH_SHORT).show();
                        }
                    }
 
@@ -104,6 +104,37 @@ public class addCourseStudentFragment extends Fragment {
 
                    }
                 });
+
+                if(bIsNotInDatabase) {
+                    databaseReference.child("matriculas").child(firebaseUser.getUid()).child(String.valueOf(cont)).setValue(sCodigoCurso);
+                    cont++;
+                    databaseReference.child("estudiantes").child(firebaseUser.getUid()).child("nCursos").setValue(cont);
+                    Toast.makeText(getActivity(),"Curso Agregado",Toast.LENGTH_SHORT).show();
+                }else{
+                    //error menor, se entra al onDataChange() 2 veces al crear el curso
+                    Toast.makeText(getActivity(),"El curso ya se encuentra agregado para esta cuenta",Toast.LENGTH_SHORT).show();
+                }
+                databaseReference.child("cursos").child(sCodigoCurso).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            curso = dataSnapshot.getValue(Cursos.class);
+                            n = curso.getNro_estudiantes();
+
+                        }else{
+                            Log.d("ERROR APP","(-1)");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                if(bIsNotInDatabase) {
+                    databaseReference.child("cursos").child(sCodigoCurso).child("nro_estudiantes").setValue(n + 1);
+                }
             }
         });
 

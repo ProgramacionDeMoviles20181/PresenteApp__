@@ -85,7 +85,7 @@ public class addCourseProfeFragment extends Fragment {
 
 
                 //Generate random code for the course
-                final String  sCode = sName.substring(0,2) + sCourseSchool.substring(0,2) + sSchedule.substring(0,2) + sCourseClassroom.substring(0,2);
+                final String  sCode = sName.substring(0,2) + sCourseSchool.substring(0,2) + sSchedule.replace(" ", "").substring(0,2) + sCourseClassroom.substring(0,2);
 
                 databaseReference.child("cursos").child(sCode).addValueEventListener(new ValueEventListener() {
                     @Override
@@ -100,14 +100,15 @@ public class addCourseProfeFragment extends Fragment {
                             Cursos curso = new Cursos(sCourseClassroom,
                                     Latitud,
                                     Longitud,
-                                    sCode,
+                                    sCode.replace(" ", ""),
                                     firebaseUser.getDisplayName(),
                                     firebaseUser.getUid(),
                                     sSchedule,
                                     sCourseSchool,
                                     sName,
-                                    iNumberStu,
-                                    false
+                                    0,
+                                    false,
+                                    iNumberStu
                                     );
 
                             databaseReference.child("cursos").child(sCode).setValue(curso);
