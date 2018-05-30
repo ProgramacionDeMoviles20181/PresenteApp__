@@ -60,8 +60,6 @@ public class addCourseStudentFragment extends Fragment {
         eCourseCode = view.findViewById(R.id.eCourseCodeAdd);
         bAgregarcest = view.findViewById(R.id.bIngresarCursoEst);
 
-
-
         bAgregarcest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

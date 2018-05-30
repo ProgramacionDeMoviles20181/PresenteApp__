@@ -2,6 +2,7 @@ package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -50,6 +51,8 @@ public class CoursesFragment extends Fragment {
 
     private DatabaseReference databaseReference;
 
+    ProgressDialog dialog;
+
     public CoursesFragment() {
     }
 
@@ -94,6 +97,10 @@ public class CoursesFragment extends Fragment {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
+        dialog = new ProgressDialog(getContext());
+        dialog.setMessage("Cargando Cursos..");
+        dialog.show();
+
         if(boolProfe){
 
             databaseReference.child("cursos").addValueEventListener(new ValueEventListener() {
@@ -115,6 +122,7 @@ public class CoursesFragment extends Fragment {
                         }
                     }
                     adapterCursos.notifyDataSetChanged();
+                    dialog.dismiss();
                 }
 
                 @Override
@@ -138,6 +146,7 @@ public class CoursesFragment extends Fragment {
                             i++;
                         }
                     }
+                    dialog.dismiss();
                 }
 
                 @Override

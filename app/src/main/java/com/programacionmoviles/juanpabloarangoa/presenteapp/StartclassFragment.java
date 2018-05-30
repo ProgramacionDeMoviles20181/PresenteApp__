@@ -2,6 +2,7 @@ package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -40,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Cursos;
 import com.programacionmoviles.juanpabloarangoa.presenteapp.modelo.Estudiantes;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -67,6 +69,9 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
     private FusedLocationProviderClient mFusedLocationClient;
     private double Latitud;
     private double Longitud;
+    private ProgressDialog dialog;
+    private double defaultDistance = 0.6;
+    private boolean bAux=false;
 
 
     public StartclassFragment() {
@@ -103,6 +108,10 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
         final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         FirebaseDatabase.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        dialog = new ProgressDialog(getContext());
+        dialog.setMessage("Cargando Cursos..");
+        dialog.show();
 
         if(boolProfe) {
             bStartclass.setText("Iniciar clase");
@@ -176,6 +185,7 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
                         }
                         course = cursoActual;
                     }
+                    dialog.dismiss();
                 }
 
                 @Override
@@ -200,9 +210,13 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
             databaseReference.child("matriculas").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(int cnt = 0; cnt<estudiante.getnCursos();cnt++){
-                        String sCurso = dataSnapshot.child(String.valueOf(cnt)).getValue(String.class);
-                        courses_list.add(sCurso);
+                    if(estudiante!=null) {
+                        for (int cnt = 0; cnt < estudiante.getnCursos(); cnt++) {
+                            String sCurso = dataSnapshot.child(String.valueOf(cnt)).getValue(String.class);
+                            courses_list.add(sCurso);
+                        }
+                    }else{
+                        Log.d("ERROR APP","(-2)");
                     }
                 }
 
@@ -268,6 +282,8 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
                         }
                         course = cursoActual;
                     }
+                    dialog.dismiss();
+                    refreshLocation();
                 }
 
                 @Override
@@ -298,27 +314,37 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
                         }
                     });
                     if(course.isIsstarted()){
-                        Calendar calendar = Calendar.getInstance();
-                        final int day = calendar.get(Calendar.DAY_OF_MONTH);
-                        final int month = calendar.get(Calendar.MONTH);
-                        databaseReference.child("Asistencias").child(course.getCodigo()).child(firebaseUser.getUid())
-                                .child(String.valueOf(day)+"_" +String.valueOf(month)).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(!dataSnapshot.exists()){
-                                    databaseReference.child("Asistencias").child(course.getCodigo()).child(firebaseUser.getUid())
-                                            .child(String.valueOf(day)+"_" +String.valueOf(month)).child("asistencia").setValue(true);
-                                    Toast.makeText(getContext(),"Usted ha ingresado a la clase",Toast.LENGTH_SHORT).show();
-                                }else{
-                                    Toast.makeText(getContext(),"Usted ya ha ingresado a la clase",Toast.LENGTH_SHORT).show();
+                        if(isCloseTo()){
+                            Calendar calendar = Calendar.getInstance();
+                            final int day = calendar.get(Calendar.DAY_OF_MONTH);
+                            final int month = calendar.get(Calendar.MONTH);
+                            databaseReference.child("Asistencias").child(course.getCodigo()).child(firebaseUser.getUid())
+                                    .child(String.valueOf(day)+"_" +String.valueOf(month)).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(!dataSnapshot.exists()){
+                                        databaseReference.child("Asistencias").child(course.getCodigo()).child(firebaseUser.getUid())
+                                                .child(String.valueOf(day)+"_" +String.valueOf(month)).child("asistencia").setValue(true);
+                                        Toast.makeText(getContext(),"Usted ha ingresado a la clase",Toast.LENGTH_SHORT).show();
+                                        bAux = true;
+                                    }else{
+                                        if(bAux){
+                                            bAux=false;
+                                        }else{
+                                            Toast.makeText(getContext(),"Usted ya ha ingresado a la clase",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
+                                }
+                            });
+                        }else{
+                            Toast.makeText(getContext(),"Usted se encuentra muy lejos de la clase\nFavor acercarse",Toast.LENGTH_SHORT).show();
+                        }
+
                     }else{
                         Toast.makeText(getContext(),"La clase aún no ha comenzado",Toast.LENGTH_SHORT).show();
                     }
@@ -338,6 +364,69 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
         });
 
         return view;
+    }
+
+    private boolean isCloseTo() {
+        LatLng courseLoc = new LatLng(course.getLatitud_aula(),course.getLongitud_aula());
+        LatLng userLoc   = new LatLng(Latitud,Longitud);
+        double distancia = CalculationByDistance(courseLoc,userLoc);
+
+        Log.d("Points Distance",String.valueOf(distancia));
+
+        return (distancia < defaultDistance);
+    }
+
+    public double CalculationByDistance(LatLng StartP, LatLng EndP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+
+        return Radius * c;
+    }
+
+    private void refreshLocation() {
+        LatLng courseLocation;
+        getLocation();
+        LatLng myLocation = new LatLng(Latitud, Longitud);
+        if(course != null){
+            courseLocation = new LatLng(course.getLatitud_aula(), course.getLongitud_aula());
+        }else {
+            courseLocation = new LatLng(6.2669533,-75.5691113);
+        }
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(courseLocation).title("Universidad de Antioquia").snippet("Alma Mater").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+        //mMap.addMarker(new MarkerOptions().position(myLocation).title("Universidad de Antioquia").snippet("Alma Mater").icon(BitmapDescriptorFactory.fromResource(R.drawable.improfile)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(courseLocation, 17));
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+
     }
 
     private void getLocation() {
@@ -396,7 +485,7 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
         if(course != null){
             courseLocation = new LatLng(course.getLatitud_aula(), course.getLongitud_aula());
         }else {
-            courseLocation = new LatLng(6.26398554, -75.57021178);
+            courseLocation = new LatLng(6.2669533,-75.5691113);
         }
         mMap.addMarker(new MarkerOptions().position(courseLocation).title("Universidad de Antioquia").snippet("Alma Mater").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
         //mMap.addMarker(new MarkerOptions().position(myLocation).title("Universidad de Antioquia").snippet("Alma Mater").icon(BitmapDescriptorFactory.fromResource(R.drawable.improfile)));

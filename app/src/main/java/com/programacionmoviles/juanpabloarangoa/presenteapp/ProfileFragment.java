@@ -2,6 +2,7 @@ package com.programacionmoviles.juanpabloarangoa.presenteapp;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ public class ProfileFragment extends Fragment {
 
     private DatabaseReference databaseReference;
     private CircleImageView profileImage;
+    ProgressDialog dialog;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -63,6 +65,9 @@ public class ProfileFragment extends Fragment {
         FirebaseDatabase.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
+        dialog = new ProgressDialog(getContext());
+        dialog.setMessage("Cargando Cursos..");
+        dialog.show();
         //Picasso.get().load(url).into(iFoto);
         //Miro si es profesor
         databaseReference.child("profesores").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
@@ -79,6 +84,7 @@ public class ProfileFragment extends Fragment {
 
 
                 }
+                dialog.dismiss();
             }
 
             @Override
@@ -101,6 +107,7 @@ public class ProfileFragment extends Fragment {
                     Picasso.get().load(urlImage).into(profileImage);
 
                 }
+                dialog.dismiss();
             }
 
             @Override
@@ -122,8 +129,6 @@ public class ProfileFragment extends Fragment {
                 intefaz2.loadGalleryImage(profileImage.getId());
             }
         });
-
-
         return rootView;
     }
 
