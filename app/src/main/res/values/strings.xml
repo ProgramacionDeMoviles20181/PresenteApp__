@@ -43,7 +43,7 @@
     <string name="aula">Aula</string>
     <string name="horario">Horario</string>
     <string name="agregar">Agregar Curso</string>
-    <string name="numeroestu">Numero de estudiantes</string>
+    <string name="numeroestu">Numero de Notas</string>
     <string name="title_activity_show_course">ShowCourseActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>

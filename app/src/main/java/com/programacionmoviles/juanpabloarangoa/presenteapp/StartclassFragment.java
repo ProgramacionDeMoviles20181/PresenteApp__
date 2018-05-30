@@ -297,7 +297,7 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
 
                         }
                     });
-                    if(course.getisstarted()){
+                    if(course.isIsstarted()){
                         Calendar calendar = Calendar.getInstance();
                         final int day = calendar.get(Calendar.DAY_OF_MONTH);
                         final int month = calendar.get(Calendar.MONTH);
