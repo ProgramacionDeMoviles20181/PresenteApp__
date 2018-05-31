@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,15 +72,6 @@ public class ShowCourseActivity extends AppCompatActivity {
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
     }
 
@@ -159,22 +149,44 @@ public class ShowCourseActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
 
-            switch (position){
-                case 0: AttendanceFragment tab1 = new AttendanceFragment();
-                    Bundle args = new Bundle();
-                    Log.d("Puto",String.valueOf(boolProfe));
-                    args.putBoolean("isprofe",boolProfe);
-                    tab1.setArguments(args);
-                    return tab1;
-                case 1: NotasFragment tab2 = new NotasFragment();
-                    Bundle args1 = new Bundle();
-                    args1.putBoolean("isprofe",boolProfe);
-                    tab2.setArguments(args1);
-                    return tab2;
-                default:
-                    return null;
+            if(boolProfe){
+                switch (position){
+                    case 0: AttendanceFragmentProfe tab1 = new AttendanceFragmentProfe();
+                        Bundle args = new Bundle();
+                        args.putString("codeCourse",sCodigoCurso);
+                        tab1.setArguments(args);
+                        return tab1;
+                    case 1: NotasFragmentProfe tab2 = new NotasFragmentProfe();
+                        Bundle args1 = new Bundle();
+                        args1.putString("codeCourse",sCodigoCurso);
+                        tab2.setArguments(args1);
+                        return tab2;
+                    default:
+                        return null;
+                }
+            }else {
+                switch (position) {
+                    case 0:
+                        AttendanceFragmentStudent tab1 = new AttendanceFragmentStudent();
+                        Bundle args = new Bundle();
+                        args.putString("codeCourse", sCodigoCurso);
+                        tab1.setArguments(args);
+                        return tab1;
+                    case 1:
+                        NotasFragmentStudent tab2 = new NotasFragmentStudent();
+                        Bundle args1 = new Bundle();
+                        args1.putString("codeCourse", sCodigoCurso);
+                        tab2.setArguments(args1);
+                        return tab2;
+                    default:
+                        return null;
+
+                }
             }
+
+
         }
+
 
         @Override
         public int getCount() {
@@ -182,15 +194,17 @@ public class ShowCourseActivity extends AppCompatActivity {
             return 2;
         }
 
+
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position){
-                case 0: return "Asistencias";
-                case 1: return "Notas";
+                case 0: return "Notas";
+                case 1: return "Asistencias";
             }
 
             return super.getPageTitle(position);
         }
+
 
     }
 

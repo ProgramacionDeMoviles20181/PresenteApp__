@@ -307,7 +307,7 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if(!dataSnapshot.exists()){
                                     databaseReference.child("Asistencias").child(course.getCodigo()).child(firebaseUser.getUid())
-                                            .child(String.valueOf(day)+"_" +String.valueOf(month)).child("asistencia").setValue(true);
+                                            .child(String.valueOf(day)+"_" +String.valueOf(month+1)).child("asistencia").setValue(true);
                                     Toast.makeText(getContext(),"Usted ha ingresado a la clase",Toast.LENGTH_SHORT).show();
                                 }else{
                                     Toast.makeText(getContext(),"Usted ya ha ingresado a la clase",Toast.LENGTH_SHORT).show();

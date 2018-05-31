@@ -91,7 +91,6 @@ public class AdapterCursos extends RecyclerView.Adapter<AdapterCursos.CursoViewH
                     */
                     Intent intent = new Intent(view.getContext(), ShowCourseActivity.class);
                     intent.putExtra("cursoCodigo",cursoClicked.getCodigo());
-
                     view.getContext().startActivity(intent);
                 }
             });

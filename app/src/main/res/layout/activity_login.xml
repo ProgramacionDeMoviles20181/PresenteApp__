@@ -28,7 +28,7 @@
             android:layout_height="0dp"
             android:layout_weight="10"
             android:orientation="vertical"
-            android:layout_marginTop="10dp">
+            >
 
             <EditText
                 android:id="@+id/eMail"

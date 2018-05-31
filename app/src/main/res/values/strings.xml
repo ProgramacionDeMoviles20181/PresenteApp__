@@ -49,7 +49,20 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="tab_text_1">Notas</string>
     <string name="tab_text_2">Asistencias</string>
-
+    <string name="cedula">Cédula del estudiante</string>
+    <string name="cedula1">cedula</string>
+    <string name="numeronota">numero de la nota</string>
+    <string name="porcentaje">Porcentaje Nota</string>
+    <string name="percentage">porcentaje %</string>
+    <string name="descripcion">Descripcion Nota</string>
+    <string name="descejem">ejem: Parcial1</string>
+    <string name="numeronotaejem">numero entero : 1, 2, etc</string>
+    <string name="valornota">Valor Nota</string>
+    <string name="valormark">ejem: 3.5</string>
+    <string name="ingresarnota">Ingresar Nota</string>
+    <string name="fecha">Fecha</string>
+    <string name="asistencia">Asistencia</string>
+    <string name="bienvenido">Bienvenido</string>
 
 
 </resources>
