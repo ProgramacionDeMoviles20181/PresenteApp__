@@ -50,7 +50,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StartclassFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class StartclassFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
 
     MapView mapView;
     GoogleMap mMap;
@@ -546,3 +546,4 @@ public class StartclassFragment extends Fragment implements OnMapReadyCallback, 
 
     }
 }
+
